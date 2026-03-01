@@ -19,6 +19,12 @@ A production-ready full-stack monorepo template with a Next.js web app, React Na
 | **Monorepo** | Turborepo + pnpm workspaces |
 | **Testing** | Vitest + Testing Library |
 
+## Opinionated Defaults
+
+This template ships with **Clerk** for authentication and **MongoDB** for the database. These are wired into the auth flow, middleware, API layer, and mobile app out of the box.
+
+If you'd prefer a different auth provider (e.g., NextAuth, Supabase Auth, Firebase Auth) or a different database (e.g., PostgreSQL with Prisma/Drizzle, Supabase, PlanetScale), you can swap them out. The integrations are cleanly separated — auth logic lives in the middleware and layout files, and database access is isolated to the `packages/db` package. Ask Claude to help you migrate to your preferred stack; point it at this README and the [CLAUDE.md](./CLAUDE.md) file for full context on the architecture.
+
 ## What's Included
 
 - **Marketing site** — Landing page with features, pricing, FAQ, and legal pages
