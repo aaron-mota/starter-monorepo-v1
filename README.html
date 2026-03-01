@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starter Monorepo</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-code: #f1f3f5;
+      --bg-sidebar: #f8f9fa;
+      --bg-hover: #e9ecef;
+      --text: #212529;
+      --text-secondary: #495057;
+      --text-muted: #868e96;
+      --border: #dee2e6;
+      --accent: #228be6;
+      --accent-hover: #1c7ed6;
+      --accent-bg: #e7f5ff;
+      --success: #2f9e44;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+      --sidebar-width: 260px;
+      --header-height: 60px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", Consolas, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1a1b1e;
+      --bg-secondary: #25262b;
+      --bg-code: #2c2e33;
+      --bg-sidebar: #25262b;
+      --bg-hover: #373a40;
+      --text: #c1c2c5;
+      --text-secondary: #909296;
+      --text-muted: #5c5f66;
+      --border: #373a40;
+      --accent: #4dabf7;
+      --accent-hover: #74c0fc;
+      --accent-bg: #1b2838;
+      --success: #51cf66;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(var(--header-height) + 24px);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-hover);
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 1.125rem;
+      color: var(--text);
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      width: var(--sidebar-width);
+      height: calc(100vh - var(--header-height));
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 24px 0;
+      transition: background 0.2s, border-color 0.2s, transform 0.3s;
+      z-index: 50;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 8px 24px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: background 0.15s, color 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar a:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+
+    .sidebar a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-bg);
+      font-weight: 600;
+    }
+
+    .sidebar-section-label {
+      padding: 16px 24px 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* Main content */
+    .main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      max-width: 860px;
+      padding: 48px 48px 96px;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    li strong {
+      color: var(--text);
+    }
+
+    /* Tables */
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--bg-secondary);
+    }
+
+    td code {
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.825rem;
+    }
+
+    /* Code blocks */
+    .code-block {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .code-block pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .code-block .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      opacity: 0;
+      transition: opacity 0.2s, background 0.15s;
+    }
+
+    .code-block:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .code-block .copy-btn:hover {
+      background: var(--bg-hover);
+    }
+
+    .code-block .copy-btn.copied {
+      color: var(--success);
+      opacity: 1;
+    }
+
+    .code-label {
+      display: inline-block;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Inline code */
+    code {
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+    }
+
+    /* Details/Summary */
+    details {
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 14px 20px;
+      background: var(--bg-secondary);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+      transition: background 0.15s;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "\25b6";
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    summary:hover {
+      background: var(--bg-hover);
+    }
+
+    details .details-content {
+      padding: 20px;
+    }
+
+    /* Blockquote / callout */
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-bg);
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--text-secondary);
+      font-size: 0.925rem;
+    }
+
+    blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Dependency graph */
+    .dep-graph {
+      text-align: center;
+      margin: 20px 0;
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    /* Convention list */
+    .convention-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .convention-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .convention-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* Numbered steps */
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 8px 0 8px 40px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 32px 20px 80px;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Overlay for mobile nav */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 40;
+    }
+
+    .sidebar-overlay.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#top" class="header-title">Starter Monorepo</a>
+    <div class="header-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-icon">&#9789;</span>
+        <span class="theme-label">Dark</span>
+      </button>
+      <button class="mobile-nav-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        &#9776;
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section-label">Overview</div>
+      <nav>
+        <a href="#tech-stack">Tech Stack</a>
+        <a href="#opinionated-defaults">Opinionated Defaults</a>
+        <a href="#whats-included">What's Included</a>
+        <a href="#project-structure">Project Structure</a>
+      </nav>
+      <div class="sidebar-section-label">Getting Started</div>
+      <nav>
+        <a href="#quick-start">Quick Start</a>
+        <a href="#commands">Commands</a>
+      </nav>
+      <div class="sidebar-section-label">Reference</div>
+      <nav>
+        <a href="#key-conventions">Key Conventions</a>
+        <a href="#customizing">Customizing</a>
+        <a href="#license">License</a>
+      </nav>
+      <div class="sidebar-section-label">Files</div>
+      <nav>
+        <a href="./GETTING_STARTED.md">GETTING_STARTED.md</a>
+        <a href="./CLAUDE.md">CLAUDE.md</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main" id="top">
+      <h1>Starter Monorepo</h1>
+      <p class="subtitle">
+        A production-ready full-stack monorepo template with a Next.js web app, React Native mobile app, and shared packages. Everything you need to start building a SaaS product &mdash; auth, billing, dashboard, API layer, and mobile app &mdash; all wired up and ready to go.
+      </p>
+
+      <!-- Tech Stack -->
+      <h2 id="tech-stack">Tech Stack</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technology</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Web Framework</strong></td><td>Next.js 15 (App Router, Turbopack)</td></tr>
+            <tr><td><strong>Mobile Framework</strong></td><td>React Native (Expo)</td></tr>
+            <tr><td><strong>Database</strong></td><td>MongoDB (native driver, no Mongoose)</td></tr>
+            <tr><td><strong>API Layer</strong></td><td>tRPC with reusable base CRUD procedures</td></tr>
+            <tr><td><strong>Auth</strong></td><td>Clerk (web + mobile)</td></tr>
+            <tr><td><strong>Billing</strong></td><td>Stripe (subscriptions, customer portal)</td></tr>
+            <tr><td><strong>Validation</strong></td><td>Zod (single source of truth for all types)</td></tr>
+            <tr><td><strong>State</strong></td><td>TanStack React Query (server), nuqs (URL)</td></tr>
+            <tr><td><strong>UI</strong></td><td>shadcn/ui, Tailwind CSS, Recharts</td></tr>
+            <tr><td><strong>Email</strong></td><td>Resend</td></tr>
+            <tr><td><strong>Monorepo</strong></td><td>Turborepo + pnpm workspaces</td></tr>
+            <tr><td><strong>Testing</strong></td><td>Vitest + Testing Library</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Opinionated Defaults -->
+      <h2 id="opinionated-defaults">Opinionated Defaults</h2>
+      <p>
+        This template ships with <strong>Clerk</strong> for authentication and <strong>MongoDB</strong> for the database. These are wired into the auth flow, middleware, API layer, and mobile app out of the box.
+      </p>
+      <p>
+        If you'd prefer a different auth provider (e.g., NextAuth, Supabase Auth, Firebase Auth) or a different database (e.g., PostgreSQL with Prisma/Drizzle, Supabase, PlanetScale), you can swap them out. The integrations are cleanly separated &mdash; auth logic lives in the middleware and layout files, and database access is isolated to the <code>packages/db</code> package. Ask Claude to help you migrate to your preferred stack; point it at this README and the <a href="./CLAUDE.md">CLAUDE.md</a> file for full context on the architecture.
+      </p>
+
+      <!-- What's Included -->
+      <h2 id="whats-included">What's Included</h2>
+      <ul>
+        <li><strong>Marketing site</strong> &mdash; Landing page with features, pricing, FAQ, and legal pages</li>
+        <li><strong>Authentication</strong> &mdash; Sign-in, sign-up, and 2FA via Clerk (web + mobile)</li>
+        <li><strong>Dashboard</strong> &mdash; Responsive layout with sidebar navigation</li>
+        <li><strong>Settings</strong> &mdash; Account management, plan details, notification preferences, device management</li>
+        <li><strong>Billing</strong> &mdash; Stripe integration with free/pro tiers, checkout, and customer portal</li>
+        <li><strong>Analytics page</strong> &mdash; Placeholder wired up with plan-gated access</li>
+        <li><strong>Mobile app</strong> &mdash; Full React Native app with tab navigation, pull-to-refresh, haptic feedback</li>
+        <li><strong>Push notifications</strong> &mdash; VAPID web push + Expo push notifications</li>
+        <li><strong>Email</strong> &mdash; Weekly digest template via Resend</li>
+        <li><strong>Base CRUD</strong> &mdash; Reusable tRPC procedures for any entity (get, create, update, delete)</li>
+        <li><strong>Three-tier schemas</strong> &mdash; Client/API/Server schema separation with adapter functions</li>
+        <li><strong>Quality tooling</strong> &mdash; ESLint, Prettier, TypeScript strict mode, Vitest, pre-commit hooks</li>
+      </ul>
+
+      <!-- Project Structure -->
+      <h2 id="project-structure">Project Structure</h2>
+
+      <details>
+        <summary>Directory layout</summary>
+        <div class="details-content">
+          <div class="code-block">
+            <pre><code>starter-monorepo-base/
+├── apps/
+│   ├── web/                    # Next.js 15 web application
+│   └── mobile/                 # React Native (Expo) mobile app
+├── packages/
+│   ├── shared/                 # Zod schemas, types, constants
+│   ├── db/                     # MongoDB native driver, typed collections
+│   ├── trpc/                   # tRPC routers and base CRUD procedures
+│   ├── api/                    # REST API client layer with React Query hooks
+│   └── ui/                     # Shared UI components
+├── scripts/
+│   └── setup-env.sh            # Creates .env files from templates
+├── CLAUDE.md                   # AI assistant instructions &amp; conventions
+├── GETTING_STARTED.md          # Full setup guide (step-by-step)
+└── package.json                # Root workspace config</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+        </div>
+      </details>
+
+      <h3>Workspace Packages</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>packages/shared</code></td><td><code>@starter/shared</code></td><td>Zod schemas, TypeScript types, constants (plan limits, etc.)</td></tr>
+            <tr><td><code>packages/db</code></td><td><code>@starter/db</code></td><td>MongoDB native driver, typed collections, index definitions</td></tr>
+            <tr><td><code>packages/trpc</code></td><td><code>@starter/trpc</code></td><td>tRPC routers with reusable base CRUD procedures</td></tr>
+            <tr><td><code>packages/api</code></td><td><code>@starter/api</code></td><td>REST API client layer with React Query hooks</td></tr>
+            <tr><td><code>packages/ui</code></td><td><code>@starter/ui</code></td><td>Shared UI components</td></tr>
+            <tr><td><code>apps/web</code></td><td><code>@starter/web</code></td><td>Next.js 15 web application</td></tr>
+            <tr><td><code>apps/mobile</code></td><td><code>@starter/mobile</code></td><td>React Native (Expo) mobile application</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Dependency Graph</h3>
+      <div class="dep-graph">
+        @starter/shared &rarr; @starter/db &rarr; @starter/trpc &rarr; @starter/api &rarr; @starter/web<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; @starter/mobile
+      </div>
+      <p>No circular dependencies allowed.</p>
+
+      <!-- Quick Start -->
+      <h2 id="quick-start">Quick Start</h2>
+
+      <details open>
+        <summary>Step-by-step setup</summary>
+        <div class="details-content">
+
+          <h3>1. Install dependencies</h3>
+          <div class="code-block">
+            <pre><code>pnpm install</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+
+          <h3>2. Create environment files</h3>
+          <div class="code-block">
+            <pre><code>./scripts/setup-env.sh</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <p>This creates <code>.env.local</code> (web) and <code>apps/mobile/.env</code> (mobile) from the example templates, generates a random <code>CRON_SECRET</code>, and sets up a symlink for Next.js.</p>
+
+          <h3>3. Add your service credentials</h3>
+          <p>At minimum, you need <strong>MongoDB</strong> and <strong>Clerk</strong> to run the web app:</p>
+          <div class="code-label">.env.local</div>
+          <div class="code-block">
+            <pre><code>MONGODB_URI=mongodb://localhost:27017/starter   # or MongoDB Atlas URI
+MONGODB_DB=starter
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...   # from dashboard.clerk.com
+CLERK_SECRET_KEY=sk_test_...                    # from dashboard.clerk.com</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <p>For the mobile app, copy the same Clerk key:</p>
+          <div class="code-label">apps/mobile/.env</div>
+          <div class="code-block">
+            <pre><code>EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+EXPO_PUBLIC_API_URL=http://YOUR_LAN_IP:3000     # not localhost — use your LAN IP</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <blockquote>
+            <p>Without Clerk keys, the apps still launch &mdash; the web app shows the marketing site and the mobile app shows a setup instructions screen.</p>
+          </blockquote>
+
+          <h3>4. Set up the database</h3>
+          <div class="code-block">
+            <pre><code>pnpm db:indexes</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+
+          <h3>5. Start developing</h3>
+          <div class="code-block">
+            <pre><code>pnpm dev        # Start the web app (http://localhost:3000)</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <p>For the mobile app:</p>
+          <div class="code-block">
+            <pre><code>cd apps/mobile
+npx expo start --go     # Start with Expo Go</code></pre>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <blockquote>
+            <p>See <a href="./GETTING_STARTED.md">GETTING_STARTED.md</a> for the full step-by-step guide, including Stripe setup, push notifications, development builds, and troubleshooting.</p>
+          </blockquote>
+
+        </div>
+      </details>
+
+      <!-- Commands -->
+      <h2 id="commands">Commands</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>pnpm dev</code></td><td>Start all dev servers</td></tr>
+            <tr><td><code>pnpm build</code></td><td>Build all packages and apps</td></tr>
+            <tr><td><code>pnpm check</code></td><td>Full quality suite (lint + format + type-check + tests)</td></tr>
+            <tr><td><code>pnpm lint:fix</code></td><td>Auto-fix lint issues</td></tr>
+            <tr><td><code>pnpm format</code></td><td>Auto-format code with Prettier</td></tr>
+            <tr><td><code>pnpm test:run</code></td><td>Run tests once</td></tr>
+            <tr><td><code>pnpm db:indexes</code></td><td>Create MongoDB indexes</td></tr>
+            <tr><td><code>./scripts/setup-env.sh</code></td><td>Create env files from templates</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Key Conventions -->
+      <h2 id="key-conventions">Key Conventions</h2>
+      <ul class="convention-list">
+        <li><strong>File naming</strong> &mdash; kebab-case only (<code>my-component.tsx</code>, not <code>MyComponent.tsx</code>)</li>
+        <li><strong>Exports</strong> &mdash; Named exports everywhere (except Next.js pages which require <code>export default</code>)</li>
+        <li><strong>UI components</strong> &mdash; Always use shadcn/ui components instead of raw HTML elements</li>
+        <li><strong>Component states</strong> &mdash; Every component handles loading (<code>&lt;Skeleton&gt;</code>), error (<code>&lt;Alert&gt;</code>), empty, and success states</li>
+        <li><strong>Mobile pull-to-refresh</strong> &mdash; Every data-fetching screen uses the <code>useRefresh</code> hook</li>
+        <li><strong>Database schemas</strong> &mdash; Three-tier pattern (client / api / server) with Zod as the source of truth</li>
+        <li><strong>No Mongoose</strong> &mdash; Uses the native MongoDB driver directly</li>
+        <li><strong>Server-only</strong> &mdash; Files in <code>server/</code> directories start with <code>import "server-only"</code></li>
+      </ul>
+      <p>See <a href="./CLAUDE.md">CLAUDE.md</a> for the complete list of conventions and patterns.</p>
+
+      <!-- Customizing -->
+      <h2 id="customizing">Customizing for Your Project</h2>
+      <p>Once everything runs, make it yours:</p>
+      <ol class="steps">
+        <li>Rename <code>@starter/*</code> packages to <code>@yourproject/*</code> across all <code>package.json</code> files and imports</li>
+        <li>Update app branding (name, icons, colors in <code>globals.css</code>)</li>
+        <li>Replace the example <code>Item</code> entity with your domain entities using the three-tier schema pattern</li>
+        <li>Add your pages, components, and API routes</li>
+        <li>Configure Stripe products/prices for your pricing tiers</li>
+      </ol>
+
+      <!-- License -->
+      <h2 id="license">License</h2>
+      <p>MIT</p>
+
+      <div class="footer">
+        <p>Generated from <a href="./README.md">README.md</a>. Open the markdown file for the plain-text version.</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Theme toggle
+    function getPreferredTheme() {
+      const stored = localStorage.getItem('readme-theme');
+      if (stored) return stored;
+      return 'light';
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('readme-theme', theme);
+      const icon = document.querySelector('.theme-icon');
+      const label = document.querySelector('.theme-label');
+      if (theme === 'dark') {
+        icon.textContent = '\u2600';
+        label.textContent = 'Light';
+      } else {
+        icon.textContent = '\u263D';
+        label.textContent = 'Dark';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    // Initialize theme
+    setTheme(getPreferredTheme());
+
+    // Sidebar toggle (mobile)
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('open');
+      document.querySelector('.sidebar-overlay').classList.toggle('visible');
+    }
+
+    // Close sidebar when clicking a nav link (mobile)
+    document.querySelectorAll('.sidebar a[href^="#"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 900) {
+          document.querySelector('.sidebar').classList.remove('open');
+          document.querySelector('.sidebar-overlay').classList.remove('visible');
+        }
+      });
+    });
+
+    // Active nav tracking
+    (function() {
+      var sections = document.querySelectorAll('h2[id]');
+      var navLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+
+      function updateActive() {
+        var scrollPos = window.scrollY + 120;
+        var currentId = '';
+
+        sections.forEach(function(section) {
+          if (section.offsetTop <= scrollPos) {
+            currentId = section.id;
+          }
+        });
+
+        navLinks.forEach(function(link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + currentId) {
+            link.classList.add('active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateActive, { passive: true });
+      updateActive();
+    })();
+
+    // Copy to clipboard
+    function copyCode(btn) {
+      var code = btn.parentElement.querySelector('code');
+      var text = code.textContent;
+
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(function() {
+        // Fallback for older browsers
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -2,6 +2,8 @@
 
 A production-ready full-stack monorepo template with a Next.js web app, React Native mobile app, and shared packages. Everything you need to start building a SaaS product — auth, billing, dashboard, API layer, and mobile app — all wired up and ready to go.
 
+> Prefer a visual overview? Open [README.html](./README.html) in your browser.
+
 ## Tech Stack
 
 | Layer | Technology |
