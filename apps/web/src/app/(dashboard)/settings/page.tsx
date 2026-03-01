@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { PLAN_LIMITS } from '@starter/shared/constants/plans';
 import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle, Mail, Monitor, Smartphone, Trash2, XCircle } from 'lucide-react';
-import { PLAN_LIMITS } from '@starter/shared/constants/plans';
 import { NotificationPreferences } from '@/components/settings/notification-preferences';
 import { PageHeader } from '@/components/shared/page-header';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -300,9 +300,7 @@ function SubscriptionTab({ plan }: { plan: 'free' | 'pro' }) {
             </div>
             <div className="rounded-lg border p-3">
               <p className="text-sm font-medium">History Retention</p>
-              <p className="text-lg font-bold">
-                {limits.historyDays ? `${limits.historyDays} days` : 'Unlimited'}
-              </p>
+              <p className="text-lg font-bold">{limits.historyDays ? `${limits.historyDays} days` : 'Unlimited'}</p>
             </div>
             <div className="rounded-lg border p-3">
               <p className="text-sm font-medium">Advanced Analytics</p>
@@ -407,9 +405,7 @@ function NotificationsTab({ userId, emailDigestEnabled }: { userId?: string; ema
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">Weekly scan summary</p>
-              <p className="text-sm text-muted-foreground">
-                Receive a weekly email with your activity highlights.
-              </p>
+              <p className="text-sm text-muted-foreground">Receive a weekly email with your activity highlights.</p>
             </div>
             <Switch
               checked={emailDigestEnabled}

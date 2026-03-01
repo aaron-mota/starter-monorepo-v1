@@ -77,8 +77,8 @@ export default function LandingPage() {
           with a production-ready starter
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          A full-stack monorepo template with authentication, billing, dashboard, and API layer.
-          Stop rebuilding the basics and focus on what makes your product unique.
+          A full-stack monorepo template with authentication, billing, dashboard, and API layer. Stop rebuilding the
+          basics and focus on what makes your product unique.
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
           <Link

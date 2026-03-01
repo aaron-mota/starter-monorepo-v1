@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
+import { getDb } from '@starter/db';
 import { ObjectId } from 'mongodb';
 import { Webhook } from 'svix';
 import type { NextRequest } from 'next/server';
-import { getDb } from '@starter/db';
 
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;

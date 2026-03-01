@@ -15,16 +15,16 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-semibold">1. Acceptance of Terms</h2>
           <p>
-            By accessing or using this application and website (the &quot;Service&quot;),
-            you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
+            By accessing or using this application and website (the &quot;Service&quot;), you agree to be bound by these
+            Terms of Service. If you do not agree, do not use the Service.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold">2. Description of Service</h2>
           <p>
-            [Your Company] provides a web application and related features through a web
-            dashboard and mobile application. Features may vary by plan (Free or Pro).
+            [Your Company] provides a web application and related features through a web dashboard and mobile
+            application. Features may vary by plan (Free or Pro).
           </p>
         </section>
 
@@ -62,8 +62,8 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-semibold">6. Intellectual Property</h2>
           <p>
-            The Service and its original content, features, and functionality are owned by [Your Company] and are protected by
-            intellectual property laws. You retain ownership of any data you input into the Service.
+            The Service and its original content, features, and functionality are owned by [Your Company] and are
+            protected by intellectual property laws. You retain ownership of any data you input into the Service.
           </p>
         </section>
 
@@ -79,8 +79,8 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-semibold">8. Limitation of Liability</h2>
           <p>
-            To the fullest extent permitted by law, [Your Company] shall not be liable for any indirect, incidental, special,
-            consequential, or punitive damages arising out of or relating to your use of the Service.
+            To the fullest extent permitted by law, [Your Company] shall not be liable for any indirect, incidental,
+            special, consequential, or punitive damages arising out of or relating to your use of the Service.
           </p>
         </section>
 

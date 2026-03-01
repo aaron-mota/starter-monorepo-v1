@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { getDb } from '@starter/db';
 import { type ObjectId } from 'mongodb';
 import type { NextRequest } from 'next/server';
-import { getDb } from '@starter/db';
 import { getResend } from '@/lib/services/email/resend';
 import { buildWeeklyDigestHtml } from '@/lib/services/email/weekly-digest-template';
 

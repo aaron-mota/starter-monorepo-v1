@@ -4,12 +4,10 @@ import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 export const metadata: Metadata = {
   title: 'Starter App — Modern Full-Stack Template',
-  description:
-    'A production-ready monorepo starter with authentication, billing, dashboard, and more.',
+  description: 'A production-ready monorepo starter with authentication, billing, dashboard, and more.',
   openGraph: {
     title: 'Starter App — Modern Full-Stack Template',
-    description:
-      'A production-ready monorepo starter with authentication, billing, dashboard, and more.',
+    description: 'A production-ready monorepo starter with authentication, billing, dashboard, and more.',
     type: 'website',
   },
   twitter: {
@@ -58,7 +56,9 @@ function Footer() {
   return (
     <footer className="border-t">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-8 md:flex-row md:justify-between">
-        <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Starter App. All rights reserved.</p>
+        <p className="text-sm text-muted-foreground">
+          &copy; {new Date().getFullYear()} Starter App. All rights reserved.
+        </p>
         <nav className="flex gap-6">
           <a href="#features" className="text-sm text-muted-foreground hover:text-foreground">
             Features

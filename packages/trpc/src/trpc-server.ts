@@ -2,11 +2,11 @@ import 'server-only';
 
 import { verifyToken } from '@clerk/backend';
 import { auth } from '@clerk/nextjs/server';
+import { connectToDatabase } from '@starter/db';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 import type { NextRequest } from 'next/server';
-import { connectToDatabase } from '@starter/db';
 
 export const createContext = async (req: NextRequest) => {
   const { db } = await connectToDatabase();

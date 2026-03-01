@@ -13,10 +13,10 @@ import {
   schemaUpdate,
   TYPE,
 } from './_config';
+import { devicePlatformEnum } from '@starter/shared/schemas/database/device-registration/client/schema';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import type { TDocDb } from '@starter/shared/schemas/database/device-registration/server/_config';
-import { devicePlatformEnum } from '@starter/shared/schemas/database/device-registration/client/schema';
 
 const routerBase = createBaseRouter({
   config: {

@@ -15,9 +15,9 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-xl font-semibold">1. Introduction</h2>
           <p>
-            [Your Company] (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates this application
-            and website (collectively, the &quot;Service&quot;). This Privacy Policy explains how we collect,
-            use, disclose, and safeguard your information when you use our Service.
+            [Your Company] (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates this application and website
+            (collectively, the &quot;Service&quot;). This Privacy Policy explains how we collect, use, disclose, and
+            safeguard your information when you use our Service.
           </p>
         </section>
 

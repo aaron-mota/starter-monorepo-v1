@@ -48,9 +48,7 @@ export default function AnalyticsPage() {
       <PageHeader title="Analytics" description="Insights into your activity." />
       <div className="rounded-lg border border-dashed p-12 text-center">
         <h3 className="text-lg font-semibold">Analytics Dashboard</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Add your analytics charts and data visualizations here.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Add your analytics charts and data visualizations here.</p>
       </div>
     </div>
   );

@@ -138,9 +138,7 @@ export default function SettingsScreen() {
             <Button
               variant="outline"
               className="flex-row gap-2 mt-1"
-              onPress={() =>
-                Linking.openURL(`${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'}/settings`)
-              }
+              onPress={() => Linking.openURL(`${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'}/settings`)}
             >
               <ExternalLink className="h-4 w-4 text-foreground" />
               <Text>{plan === 'pro' ? 'Manage Billing' : 'Upgrade to Pro'}</Text>

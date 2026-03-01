@@ -3,14 +3,7 @@ import type { TDoc, TDocCreate, TDocUpdate } from '../client/types';
 import type { TDocApi, TDocApiCreate, TDocApiUpdate } from './types';
 
 export function adapterFnApiToFE(data: TDocApi): TDoc {
-  const {
-    _id,
-    createdAt,
-    updatedAt,
-    subscriptionUserId,
-    onboardingCompletedAt,
-    ...rest
-  } = data;
+  const { _id, createdAt, updatedAt, subscriptionUserId, onboardingCompletedAt, ...rest } = data;
   return {
     id: adapterFnIdApiToFE(_id)!,
     createdAt: new Date(createdAt),
