@@ -1,0 +1,13 @@
+# Ignore artifacts:
+build
+dist
+coverage
+.next
+node_modules
+*.html
+*.json
+*.md
+apps/web/src/components/ui/*
+apps/mobile/components/ui/*
+apps/mobile/.expo/
+apps/mobile/expo-env.d.ts

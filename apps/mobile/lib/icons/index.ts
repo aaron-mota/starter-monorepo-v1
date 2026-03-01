@@ -1,0 +1,82 @@
+import { iconWithClassName } from './icon-with-class-name';
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  ChevronRight,
+  Clock,
+  Copy,
+  ExternalLink,
+  Hash,
+  LayoutDashboard,
+  List,
+  Loader2,
+  LogOut,
+  Mail,
+  Minus,
+  Moon,
+  Search,
+  Settings,
+  Smartphone,
+  Star,
+  Sun,
+  Trash2,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+  Users,
+} from 'lucide-react-native';
+
+iconWithClassName(Activity);
+iconWithClassName(BarChart3);
+iconWithClassName(Bell);
+iconWithClassName(ChevronRight);
+iconWithClassName(Clock);
+iconWithClassName(Copy);
+iconWithClassName(ExternalLink);
+iconWithClassName(Hash);
+iconWithClassName(LayoutDashboard);
+iconWithClassName(List);
+iconWithClassName(Loader2);
+iconWithClassName(LogOut);
+iconWithClassName(Mail);
+iconWithClassName(Minus);
+iconWithClassName(Moon);
+iconWithClassName(Search);
+iconWithClassName(Settings);
+iconWithClassName(Smartphone);
+iconWithClassName(Star);
+iconWithClassName(Sun);
+iconWithClassName(Trash2);
+iconWithClassName(TrendingDown);
+iconWithClassName(TrendingUp);
+iconWithClassName(Trophy);
+iconWithClassName(Users);
+
+export {
+  Activity,
+  BarChart3,
+  Bell,
+  ChevronRight,
+  Clock,
+  Copy,
+  ExternalLink,
+  Hash,
+  LayoutDashboard,
+  List,
+  Loader2,
+  LogOut,
+  Mail,
+  Minus,
+  Moon,
+  Search,
+  Settings,
+  Smartphone,
+  Star,
+  Sun,
+  Trash2,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+  Users,
+};
