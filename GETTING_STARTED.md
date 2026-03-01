@@ -29,10 +29,22 @@ You need accounts for these services before the apps will work.
 - [ ] In the Clerk dashboard, go to **API Keys** and copy:
   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (starts with `pk_test_`)
   - `CLERK_SECRET_KEY` (starts with `sk_test_`)
-- [ ] Go to **Webhooks** → create an endpoint pointing to `http://localhost:3000/api/webhook/clerk`
+
+#### Local webhook tunnel (required for Clerk webhooks)
+
+Clerk needs to reach your local machine to deliver webhook events (e.g., `user.created`). Run an ngrok tunnel **before** setting up the webhook in Clerk:
+
+```bash
+ngrok http 3000
+```
+
+Copy the forwarding URL (e.g., `https://abc123.ngrok-free.app`) — you'll use it in the next step.
+
+> **Tip:** Keep this terminal running while developing. If you restart ngrok you'll get a new URL and will need to update the webhook endpoint in Clerk.
+
+- [ ] Go to **Webhooks** → create an endpoint pointing to `https://YOUR_NGROK_URL/api/webhook/clerk`
   - Subscribe to `user.created` and `user.deleted` events
   - Copy the webhook signing secret as `CLERK_WEBHOOK_SECRET`
-  - (For local dev, use a tunnel like ngrok: `ngrok http 3000`, then use the ngrok URL for the webhook endpoint)
 - [ ] The same Clerk publishable key works for both web and mobile
 
 ### Stripe (Optional — for payments)
@@ -59,10 +71,25 @@ You need accounts for these services before the apps will work.
 
 ## Phase 3: Create Environment Files
 
-### Root `.env.local` (powers the web app)
+Run the setup script to create all env files at once:
 
-- [ ] Copy the example: `cp .env.example .env.local`
-- [ ] Fill in all values from Phase 2:
+```bash
+./scripts/setup-env.sh
+```
+
+This copies the `.example` templates and creates the web app symlink:
+
+| Source | Destination | Purpose |
+|--------|-------------|---------|
+| `.env.example` | `.env.local` | Web app config (all services) |
+| `apps/mobile/.env.example` | `apps/mobile/.env` | Mobile app config |
+| — | `apps/web/.env.local` → `../../.env.local` | Symlink so Next.js reads root env |
+
+> Re-run with `--force` to overwrite existing files: `./scripts/setup-env.sh --force`
+
+### Fill in your credentials
+
+- [ ] Open `.env.local` and fill in all values from Phase 2:
 
 ```env
 # Required
@@ -84,16 +111,7 @@ VAPID_PRIVATE_KEY=...
 VAPID_SUBJECT=mailto:you@example.com
 ```
 
-### Web app symlink
-
-- [ ] Create a symlink so Next.js picks up the root env file:
-  ```bash
-  ln -s ../../.env.local apps/web/.env.local
-  ```
-
-### Mobile `apps/mobile/.env`
-
-- [ ] Create `apps/mobile/.env` with:
+- [ ] Open `apps/mobile/.env` and set your LAN IP:
 
 ```env
 # For local dev, use your machine's LAN IP (not localhost!)
@@ -136,9 +154,36 @@ EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 
 ## Phase 6: Run the Mobile App
 
-The mobile app uses `expo-dev-client` (native modules like `expo-secure-store` and `expo-notifications`), so it **cannot run in Expo Go**. You need a development build.
+You have two options for running the mobile app locally. Both support hot reload for JS/TS changes — the difference is native module support.
 
-### Option A: iOS Simulator Build (fastest for testing)
+| | Expo Go | Development Build |
+|---|---|---|
+| **Setup time** | Instant (download from App Store) | ~10–15 min (one-time EAS cloud build) |
+| **Hot reload** | Yes | Yes |
+| **Push notifications** | No (silently skipped) | Yes |
+| **When to rebuild** | Never | Only when adding native modules or changing `app.json` plugins |
+
+**Recommendation:** Start with Expo Go to get running fast. Switch to a development build when you need push notifications or add a custom native module.
+
+### Option A: Expo Go (fastest start)
+
+Expo Go is a pre-built app from the App Store / Play Store that can run your project with no native build step.
+
+- [ ] Install **Expo Go** on your physical device (App Store / Google Play) or use the iOS Simulator (Expo Go is pre-installed)
+- [ ] Start the Expo dev server:
+  ```bash
+  cd apps/mobile
+  npx expo start --go
+  ```
+  > The `--go` flag is required because `expo-dev-client` is in the project dependencies, which makes `npx expo start` default to development build mode. Alternatively, you can run `npx expo start` and press `s` to switch to Expo Go.
+- [ ] **Physical device:** Scan the QR code in the terminal with your device camera
+- [ ] **iOS Simulator:** Press `i` in the terminal to open in the simulator
+
+> **Limitation:** Push notification registration will silently fail in Expo Go (the code is wrapped in a try/catch). Everything else — auth, data fetching, navigation, haptics — works normally.
+
+### Option B: Development Build (full features)
+
+A development build is a custom native app compiled with all your native modules. Once built, you use it exactly like Expo Go — hot reload works the same way. You only need to rebuild when adding a new native module or changing `app.json` plugins.
 
 - [ ] Install EAS CLI if not already: `npm install -g eas-cli`
 - [ ] Log in to Expo: `eas login`
@@ -149,16 +194,16 @@ The mobile app uses `expo-dev-client` (native modules like `expo-secure-store` a
   ```
   This generates a real `projectId` — update it in `app.json` under `extra.eas.projectId`
 
+#### iOS Simulator
+
 - [ ] Build for iOS simulator:
   ```bash
+  cd apps/mobile
   eas build --profile development --platform ios
   ```
-  (This builds in the cloud — takes ~10–15 min the first time)
+  (Builds in the cloud — ~10–15 min the first time. Subsequent builds with no native changes are cached.)
 
-- [ ] Once the build finishes, download and install the `.tar.gz` on your simulator:
-  ```bash
-  # EAS CLI will prompt you to install automatically
-  ```
+- [ ] Once the build finishes, EAS CLI will prompt you to install it on the simulator automatically
 
 - [ ] Start the Expo dev server:
   ```bash
@@ -168,7 +213,7 @@ The mobile app uses `expo-dev-client` (native modules like `expo-secure-store` a
 
 - [ ] Open the app on the simulator — it should connect to the dev server
 
-### Option B: Physical Device Build (for real device testing)
+#### Physical Device
 
 - [ ] Build for physical device:
   ```bash
@@ -199,6 +244,7 @@ The mobile app uses `expo-dev-client` (native modules like `expo-secure-store` a
 > - "Network request failed" → Check `EXPO_PUBLIC_API_URL` uses your LAN IP, not `localhost`. Ensure web server is running.
 > - Auth errors → Ensure `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` matches the web app's key.
 > - Build fails → Run `eas build` from inside `apps/mobile/`, not the repo root.
+> - Expo Go crashes on launch → Make sure you're using `npx expo start` (not `--dev-client`). The `--dev-client` flag is only for development builds.
 
 ## Phase 7: Quality Check
 
@@ -234,8 +280,9 @@ Once everything runs, start making it yours:
 | `pnpm format` | Auto-format code |
 | `pnpm test:run` | Run tests once |
 | `pnpm db:indexes` | Create MongoDB indexes |
-| `cd apps/mobile && npx expo start --dev-client` | Start mobile dev server |
-| `cd apps/mobile && eas build --profile development --platform ios` | Build for iOS simulator |
+| `cd apps/mobile && npx expo start --go` | Start mobile dev server (Expo Go) |
+| `cd apps/mobile && npx expo start --dev-client` | Start mobile dev server (development build) |
+| `cd apps/mobile && eas build --profile development --platform ios` | Build dev client for iOS simulator |
 
 ## File Locations: Environment
 
