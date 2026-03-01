@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const content = (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <TRPCProvider>{children}</TRPCProvider>
         </ThemeProvider>
         <Analytics />
