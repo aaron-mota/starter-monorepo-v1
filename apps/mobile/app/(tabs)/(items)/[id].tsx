@@ -58,13 +58,13 @@ export default function ItemDetailScreen() {
             <View className="flex-row justify-between">
               <Text className="text-muted-foreground">Created</Text>
               <Text className="font-medium">
-                {item.createdAt ? new Date(item.createdAt as string).toLocaleDateString() : '--'}
+                {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '--'}
               </Text>
             </View>
             <View className="flex-row justify-between">
               <Text className="text-muted-foreground">Updated</Text>
               <Text className="font-medium">
-                {item.updatedAt ? new Date(item.updatedAt as string).toLocaleDateString() : '--'}
+                {item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : '--'}
               </Text>
             </View>
           </CardContent>

@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             <TRPCProvider>{children}</TRPCProvider>
           </ThemeProvider>
           <Analytics />

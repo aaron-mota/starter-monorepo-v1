@@ -8,10 +8,11 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
-import { Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Appearance, Platform } from 'react-native';
+import { Appearance, Platform, Text as RNText, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { Theme } from '@react-navigation/native';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { setAndroidNavigationBar } from '@/lib/android-navigation-bar';
@@ -42,11 +43,18 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+const clerkPublishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? '';
+const isClerkConfigured = clerkPublishableKey.length > 15 && !clerkPublishableKey.includes('...');
+
 export default function RootLayout() {
   usePlatformSpecificSetup();
 
+  if (!isClerkConfigured) {
+    return <EnvSetupScreen />;
+  }
+
   return (
-    <ClerkProvider publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
       <TRPCProvider>
         <InitialLayout />
       </TRPCProvider>
@@ -111,3 +119,68 @@ function useSetAndroidNavigationBar() {
 }
 
 function noop() {}
+
+const MONO = Platform.select({ ios: 'Menlo', default: 'monospace' });
+const TAB_LABELS = ['Dashboard', 'Items', 'Analytics', 'Groups', 'Settings'];
+
+function EnvSetupScreen() {
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+      {/* Main content area — empty app shell */}
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
+          <RNText style={{ fontSize: 22, fontWeight: 'bold', color: '#09090b' }}>Dashboard</RNText>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <RNText style={{ fontSize: 15, color: '#a1a1aa' }}>No data yet</RNText>
+          </View>
+        </View>
+      </SafeAreaView>
+
+      {/* Setup banner — pinned above tab bar */}
+      <View
+        style={{
+          marginHorizontal: 12,
+          marginBottom: 8,
+          backgroundColor: '#fef9c3',
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: '#fde047',
+          padding: 14,
+        }}
+      >
+        <RNText style={{ fontSize: 14, fontWeight: '600', color: '#713f12', marginBottom: 4 }}>Setup required</RNText>
+        <RNText style={{ fontSize: 13, color: '#854d0e', lineHeight: 18 }}>
+          Add your Clerk key to{' '}
+          <RNText style={{ fontFamily: MONO, fontSize: 12, color: '#713f12' }}>apps/mobile/.env</RNText>
+          {'\n'}
+          <RNText style={{ fontFamily: MONO, fontSize: 11, color: '#a16207' }}>
+            EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+          </RNText>
+        </RNText>
+      </View>
+
+      {/* Mock tab bar */}
+      <View
+        style={{
+          flexDirection: 'row',
+          borderTopWidth: 0.5,
+          borderTopColor: '#e4e4e7',
+          paddingTop: 8,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+          backgroundColor: '#ffffff',
+        }}
+      >
+        {TAB_LABELS.map((label, i) => (
+          <View key={label} style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ width: 22, height: 22, borderRadius: 4, backgroundColor: '#f4f4f5', marginBottom: 4 }} />
+            <RNText style={{ fontSize: 10, color: i === 0 ? '#09090b' : '#a1a1aa' }}>{label}</RNText>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}

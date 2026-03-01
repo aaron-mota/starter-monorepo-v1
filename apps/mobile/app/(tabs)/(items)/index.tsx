@@ -13,15 +13,12 @@ import { ChevronRight, Search, Star } from '@/lib/icons';
 import { trpc } from '@/lib/trpc';
 
 export default function ItemsScreen() {
-  const { ownerId, isLoading: isUserLoading } = useCurrentUser();
+  const { isLoading: isUserLoading } = useCurrentUser();
   const router = useRouter();
   const [search, setSearch] = useState('');
   const { refreshing, onRefresh } = useRefresh();
 
-  const { data: items, isLoading: isItemsLoading } = trpc.item.getAll.useQuery(
-    { ownerId: ownerId! },
-    { enabled: !!ownerId }
-  );
+  const { data: items, isLoading: isItemsLoading } = trpc.item.getAll.useQuery();
 
   const isLoading = isUserLoading || isItemsLoading;
 
