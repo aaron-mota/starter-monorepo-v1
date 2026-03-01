@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 export const metadata: Metadata = {
   title: 'Starter App — Modern Full-Stack Template',
@@ -37,6 +38,7 @@ function Navbar() {
           </a>
         </nav>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <Link href="/sign-in" className="text-sm font-medium hover:underline">
             Sign In
           </Link>
