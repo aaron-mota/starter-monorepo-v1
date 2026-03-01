@@ -292,16 +292,16 @@ function SubscriptionTab({ plan }: { plan: 'free' | 'pro' }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-lg border p-3">
               <p className="text-sm font-medium">Max Items</p>
-              <p className="text-lg font-bold">{limits.maxTags}</p>
+              <p className="text-lg font-bold">{limits.maxItems}</p>
             </div>
             <div className="rounded-lg border p-3">
               <p className="text-sm font-medium">Max Team Members</p>
-              <p className="text-lg font-bold">{limits.maxFamilyMembers}</p>
+              <p className="text-lg font-bold">{limits.maxTeamMembers}</p>
             </div>
             <div className="rounded-lg border p-3">
               <p className="text-sm font-medium">History Retention</p>
               <p className="text-lg font-bold">
-                {limits.scanHistoryDays ? `${limits.scanHistoryDays} days` : 'Unlimited'}
+                {limits.historyDays ? `${limits.historyDays} days` : 'Unlimited'}
               </p>
             </div>
             <div className="rounded-lg border p-3">
