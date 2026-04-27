@@ -160,7 +160,7 @@ function DevicesTab({ ownerId }: { ownerId: string }) {
             {showManualRegister && (
               <div className="mt-3 space-y-3">
                 <Input
-                  placeholder="Device name (e.g. Aaron's Chrome)"
+                  placeholder="Device name (e.g. My Chrome on MacBook)"
                   value={deviceName}
                   onChange={(e) => setDeviceName(e.target.value)}
                   maxLength={60}
