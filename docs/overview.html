@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starter Monorepo — Project Overview</title>
+    <style>
+      :root {
+        --bg: #fafaf9;
+        --surface: #ffffff;
+        --surface-2: #f4f4f3;
+        --border: #e7e5e4;
+        --border-strong: #d6d3d1;
+        --text: #1c1917;
+        --text-muted: #57534e;
+        --text-subtle: #78716c;
+        --accent: #0c4a6e;
+        --accent-soft: #e0f2fe;
+        --accent-text: #0369a1;
+        --code-bg: #f4f4f3;
+        --code-border: #e7e5e4;
+        --good: #047857;
+        --good-bg: #d1fae5;
+        --warn: #b45309;
+        --warn-bg: #fef3c7;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+        --radius: 10px;
+      }
+
+      [data-theme='dark'] {
+        --bg: #0c0a09;
+        --surface: #1c1917;
+        --surface-2: #292524;
+        --border: #292524;
+        --border-strong: #44403c;
+        --text: #fafaf9;
+        --text-muted: #d6d3d1;
+        --text-subtle: #a8a29e;
+        --accent: #38bdf8;
+        --accent-soft: #082f49;
+        --accent-text: #7dd3fc;
+        --code-bg: #292524;
+        --code-border: #44403c;
+        --good: #34d399;
+        --good-bg: #064e3b;
+        --warn: #fbbf24;
+        --warn-bg: #451a03;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.6);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      header.site {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: saturate(180%) blur(8px);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-text));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .brand-text {
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      .brand-sub {
+        color: var(--text-subtle);
+        font-size: 12px;
+        margin-top: 1px;
+      }
+
+      .theme-toggle {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: inherit;
+        transition: all 0.15s;
+      }
+
+      .theme-toggle:hover {
+        background: var(--border);
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 56px 0 32px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+        margin: 0 0 16px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+      }
+
+      .hero p.lede {
+        font-size: 18px;
+        color: var(--text-muted);
+        max-width: 720px;
+        margin: 0;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .pill {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      nav.tabs {
+        display: flex;
+        gap: 4px;
+        border-bottom: 1px solid var(--border);
+        margin-top: 32px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      nav.tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--text-muted);
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: all 0.15s;
+        margin-bottom: -1px;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab.active {
+        color: var(--accent-text);
+        border-bottom-color: var(--accent);
+      }
+
+      main {
+        padding: 32px 0 80px;
+      }
+
+      .panel {
+        display: none;
+        animation: fade 0.18s ease-out;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        font-size: 22px;
+        margin: 32px 0 12px;
+        letter-spacing: -0.01em;
+      }
+
+      h2:first-of-type {
+        margin-top: 0;
+      }
+
+      h3 {
+        font-size: 16px;
+        margin: 20px 0 8px;
+        color: var(--text);
+      }
+
+      p {
+        color: var(--text-muted);
+        margin: 0 0 12px;
+      }
+
+      a {
+        color: var(--accent-text);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin-top: 0;
+      }
+
+      .card .card-meta {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        color: var(--text-subtle);
+        margin-bottom: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 24px;
+        font-size: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--surface-2);
+        font-weight: 600;
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      td code {
+        font-size: 12px;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        border-radius: var(--radius);
+        padding: 16px;
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.55;
+        margin: 12px 0 20px;
+      }
+
+      pre code {
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-size: 13px;
+      }
+
+      ul,
+      ol {
+        color: var(--text-muted);
+        padding-left: 22px;
+      }
+
+      ul li,
+      ol li {
+        margin-bottom: 4px;
+      }
+
+      .badge {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .badge.good {
+        background: var(--good-bg);
+        color: var(--good);
+      }
+
+      .badge.warn {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+
+      .callout {
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+        color: var(--accent-text);
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin: 16px 0;
+        font-size: 14px;
+      }
+
+      .callout strong {
+        color: var(--accent-text);
+      }
+
+      .tree {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 13px;
+        white-space: pre;
+        line-height: 1.55;
+        color: var(--text-muted);
+      }
+
+      .tree .dir {
+        color: var(--accent-text);
+        font-weight: 600;
+      }
+
+      .tree .comment {
+        color: var(--text-subtle);
+      }
+
+      .dep-graph {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 13px;
+        line-height: 1.8;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+
+      .dep-node {
+        display: inline-block;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 12px;
+        margin: 2px;
+      }
+
+      .arrow {
+        color: var(--text-subtle);
+        margin: 0 6px;
+      }
+
+      .conv-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .conv-row:last-child {
+        border-bottom: none;
+      }
+
+      .conv-icon {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: var(--surface-2);
+        display: grid;
+        place-items: center;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--accent-text);
+      }
+
+      .conv-body {
+        flex: 1;
+      }
+
+      .conv-body strong {
+        color: var(--text);
+      }
+
+      .conv-body p {
+        margin: 4px 0 0;
+        font-size: 14px;
+      }
+
+      .feature {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .feature-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .feature-title h3 {
+        margin: 0;
+      }
+
+      .feature p {
+        font-size: 14px;
+        margin: 0;
+      }
+
+      .feature .feature-meta {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        color: var(--text-subtle);
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 0;
+        margin-top: 48px;
+        text-align: center;
+        color: var(--text-subtle);
+        font-size: 13px;
+      }
+
+      @media (max-width: 640px) {
+        .hero h1 {
+          font-size: 28px;
+        }
+        .hero p.lede {
+          font-size: 16px;
+        }
+        .header-inner {
+          padding: 12px 16px;
+        }
+        .container {
+          padding: 0 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div>
+            <div class="brand-text">Starter Monorepo</div>
+            <div class="brand-sub">Project Overview</div>
+          </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">Light / Dark</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="hero">
+        <h1>A production-ready full-stack SaaS starter</h1>
+        <p class="lede">
+          A Turborepo monorepo with a Next.js 15 web app, an Expo React Native mobile app, and shared
+          TypeScript packages — auth, billing, dashboard, API layer, and mobile, all wired up with
+          opinionated conventions and quality tooling out of the box.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Next.js 15</span>
+          <span class="pill">React 19</span>
+          <span class="pill">React Native (Expo)</span>
+          <span class="pill">TypeScript 5.8</span>
+          <span class="pill">tRPC</span>
+          <span class="pill">MongoDB</span>
+          <span class="pill">Clerk</span>
+          <span class="pill">Stripe</span>
+          <span class="pill">Zod</span>
+          <span class="pill">Turborepo</span>
+          <span class="pill">pnpm</span>
+        </div>
+      </section>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="overview" role="tab">Overview</button>
+        <button class="tab" data-tab="architecture" role="tab">Architecture</button>
+        <button class="tab" data-tab="packages" role="tab">Packages</button>
+        <button class="tab" data-tab="features" role="tab">Features</button>
+        <button class="tab" data-tab="conventions" role="tab">Conventions</button>
+        <button class="tab" data-tab="setup" role="tab">Setup</button>
+        <button class="tab" data-tab="tooling" role="tab">Tooling</button>
+      </nav>
+
+      <main>
+        <!-- OVERVIEW -->
+        <section class="panel active" id="overview" role="tabpanel">
+          <h2>What this is</h2>
+          <p>
+            An opinionated starter for SaaS-style projects: marketing site, authenticated dashboard,
+            subscription billing, and a companion mobile app — all sharing a single source of truth for
+            schemas and types. Designed to be cloned, renamed, and shipped without ripping out
+            half-built systems.
+          </p>
+
+          <h2>Tech Stack</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Web framework</td>
+                <td><code>Next.js 15</code> (App Router, Turbopack)</td>
+                <td>Server components, fast HMR, file-system routing</td>
+              </tr>
+              <tr>
+                <td>Mobile framework</td>
+                <td><code>React Native</code> via Expo</td>
+                <td>Single codebase iOS + Android, OTA updates, EAS builds</td>
+              </tr>
+              <tr>
+                <td>Database</td>
+                <td>MongoDB (native driver, no Mongoose)</td>
+                <td>Zod is the source of truth for shape, not Mongoose models</td>
+              </tr>
+              <tr>
+                <td>API layer</td>
+                <td><code>tRPC</code> with reusable base CRUD</td>
+                <td>End-to-end type safety, no codegen, shared procedures</td>
+              </tr>
+              <tr>
+                <td>Auth</td>
+                <td>Clerk (web + mobile)</td>
+                <td>Drop-in 2FA, social, session mgmt; SDKs for both platforms</td>
+              </tr>
+              <tr>
+                <td>Billing</td>
+                <td>Stripe (subscriptions + customer portal)</td>
+                <td>Free / pro tiers, plan gating, webhook-driven sync</td>
+              </tr>
+              <tr>
+                <td>Validation</td>
+                <td>Zod</td>
+                <td>One schema → infer types, validate input, derive API shape</td>
+              </tr>
+              <tr>
+                <td>Server state</td>
+                <td>TanStack React Query</td>
+                <td>Caching, refetching, optimistic updates</td>
+              </tr>
+              <tr>
+                <td>URL state</td>
+                <td><code>nuqs</code></td>
+                <td>Type-safe search params, shareable filtered views</td>
+              </tr>
+              <tr>
+                <td>UI</td>
+                <td>shadcn/ui + Tailwind CSS + Recharts</td>
+                <td>Owned components (not a dep), utility CSS, charts</td>
+              </tr>
+              <tr>
+                <td>Email</td>
+                <td>Resend</td>
+                <td>Transactional + scheduled (weekly digest cron)</td>
+              </tr>
+              <tr>
+                <td>Push notifications</td>
+                <td>VAPID web push + Expo push</td>
+                <td>Cross-platform delivery, server-side scheduling</td>
+              </tr>
+              <tr>
+                <td>Monorepo</td>
+                <td>Turborepo + pnpm workspaces</td>
+                <td>Cached builds, dependency-aware task graph</td>
+              </tr>
+              <tr>
+                <td>Testing</td>
+                <td>Vitest + Testing Library</td>
+                <td>Fast, ESM-native, jsdom for components</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>What's included</h2>
+          <div class="grid grid-2">
+            <div class="card">
+              <h3>Marketing site</h3>
+              <p>Landing page with features, pricing, FAQ, plus privacy &amp; terms.</p>
+            </div>
+            <div class="card">
+              <h3>Authentication</h3>
+              <p>Sign-in, sign-up, 2FA via Clerk on both web and mobile.</p>
+            </div>
+            <div class="card">
+              <h3>Dashboard</h3>
+              <p>Responsive layout with sidebar nav, gated by plan tier.</p>
+            </div>
+            <div class="card">
+              <h3>Settings</h3>
+              <p>Account, plan details, notifications, device management.</p>
+            </div>
+            <div class="card">
+              <h3>Billing</h3>
+              <p>Stripe checkout, subscription portal, plan gating, webhook sync.</p>
+            </div>
+            <div class="card">
+              <h3>Mobile app</h3>
+              <p>Tabs (dashboard, items, groups, analytics, settings) with pull-to-refresh, haptics, deep links.</p>
+            </div>
+            <div class="card">
+              <h3>Push notifications</h3>
+              <p>Web push via VAPID, mobile via Expo, with subscription management.</p>
+            </div>
+            <div class="card">
+              <h3>Email</h3>
+              <p>Resend integration with a weekly-digest cron job and React Email templates.</p>
+            </div>
+            <div class="card">
+              <h3>Base CRUD</h3>
+              <p>Reusable tRPC procedures (get, create, update, delete) you mount per entity.</p>
+            </div>
+            <div class="card">
+              <h3>Three-tier schemas</h3>
+              <p>Client / API / Server schema separation with adapter functions between layers.</p>
+            </div>
+            <div class="card">
+              <h3>Quality tooling</h3>
+              <p>ESLint flat config, Prettier, TypeScript strict, Vitest, Husky pre-commit hooks.</p>
+            </div>
+            <div class="card">
+              <h3>Deep linking</h3>
+              <p>Apple Universal Links + Android App Links via <code>.well-known/</code> static routes.</p>
+            </div>
+          </div>
+
+          <h2>Opinionated defaults</h2>
+          <p>
+            The template ships wired to <strong>Clerk</strong> and <strong>MongoDB</strong>. Both are
+            isolated behind clean boundaries — auth in middleware + layouts, database access in
+            <code>@starter/db</code> — so swapping in NextAuth, Supabase, Postgres, etc. is a contained
+            change rather than a refactor.
+          </p>
+        </section>
+
+        <!-- ARCHITECTURE -->
+        <section class="panel" id="architecture" role="tabpanel">
+          <h2>Project structure</h2>
+          <pre class="tree"><span class="dir">starter-monorepo-base/</span>
+├── <span class="dir">apps/</span>
+│   ├── <span class="dir">web/</span>                    <span class="comment"># Next.js 15 web app (App Router)</span>
+│   └── <span class="dir">mobile/</span>                 <span class="comment"># Expo React Native app</span>
+├── <span class="dir">packages/</span>
+│   ├── <span class="dir">shared/</span>                 <span class="comment"># Zod schemas, types, constants</span>
+│   ├── <span class="dir">db/</span>                     <span class="comment"># MongoDB native driver, typed collections</span>
+│   ├── <span class="dir">trpc/</span>                   <span class="comment"># tRPC routers + base CRUD procedures</span>
+│   ├── <span class="dir">api/</span>                    <span class="comment"># React Query hooks + REST client layer</span>
+│   └── <span class="dir">ui/</span>                     <span class="comment"># Shared UI components (cross-platform stub)</span>
+├── <span class="dir">docs/</span>                       <span class="comment"># Architecture, conventions, PRD, setup guide</span>
+├── <span class="dir">scripts/</span>
+│   └── setup-env.sh            <span class="comment"># Bootstraps .env files, generates CRON_SECRET</span>
+├── CLAUDE.md                   <span class="comment"># AI assistant instructions &amp; conventions</span>
+├── GETTING_STARTED.md          <span class="comment"># Full setup guide (step-by-step)</span>
+├── README.md                   <span class="comment"># Landing doc</span>
+└── turbo.json                  <span class="comment"># Task graph + caching</span></pre>
+
+          <h2>Dependency graph</h2>
+          <p>Strict linear chain — no circular imports allowed. Turborepo enforces build order.</p>
+          <div class="dep-graph">
+            <span class="dep-node">@starter/shared</span>
+            <span class="arrow">→</span>
+            <span class="dep-node">@starter/db</span>
+            <span class="arrow">→</span>
+            <span class="dep-node">@starter/trpc</span>
+            <span class="arrow">→</span>
+            <span class="dep-node">@starter/api</span>
+            <br /><br />
+            <span style="margin-left: 60ch">↘</span><br />
+            <span style="margin-left: 60ch"><span class="dep-node">@starter/web</span></span><br />
+            <span style="margin-left: 60ch">↗</span><br />
+            <span style="margin-left: 60ch"><span class="dep-node">@starter/mobile</span></span>
+          </div>
+
+          <h2>Three-tier schema pattern</h2>
+          <p>
+            Every database entity has three schema flavors that share a single Zod source of truth.
+            Each tier handles a different boundary, with explicit adapters between them.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>Folder</th>
+                <th>Used by</th>
+                <th>Example types</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Client</strong></td>
+                <td><code>client/</code></td>
+                <td>Frontend code, forms, validation</td>
+                <td><code>TDoc</code>, <code>TDocCreate</code>, <code>TDocUpdate</code></td>
+              </tr>
+              <tr>
+                <td><strong>API</strong></td>
+                <td><code>api/</code></td>
+                <td>Wire format between client &amp; server</td>
+                <td><code>TDocApi</code>, <code>TDocApiCreate</code>, <code>TDocApiUpdate</code></td>
+              </tr>
+              <tr>
+                <td><strong>Server</strong></td>
+                <td><code>server/</code></td>
+                <td>MongoDB documents (BSON, ObjectId)</td>
+                <td><code>TDocDb</code>, <code>TDocDbCreate</code>, <code>TDocDbUpdate</code></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre class="tree"><span class="dir">packages/shared/schemas/database/[entity]/</span>
+├── _config.ts           <span class="comment"># Root TYPE + SCHEMA exports</span>
+├── <span class="dir">client/</span>
+│   ├── schema.ts        <span class="comment"># Zod schemas (form-friendly)</span>
+│   ├── types.ts         <span class="comment"># Inferred TS types</span>
+│   └── constants.ts     <span class="comment"># DEFAULT_VALUES, KEYS_*</span>
+├── <span class="dir">api/</span>
+│   ├── schema.ts        <span class="comment"># API wire schemas</span>
+│   ├── types.ts         <span class="comment"># API types</span>
+│   └── adapterFns.ts    <span class="comment"># API ⇄ Client transforms</span>
+└── <span class="dir">server/</span>
+    ├── schema.ts        <span class="comment"># DB schemas (ObjectId, Date)</span>
+    ├── types.ts         <span class="comment"># DB types</span>
+    └── adapterFns.ts    <span class="comment"># DB ⇄ Client transforms</span></pre>
+
+          <div class="callout">
+            <strong>server/ is firewalled.</strong> Every <code>server/</code> file starts with
+            <code>import "server-only"</code>. Entity barrels (<code>_config.ts</code>) only re-export
+            from <code>client/</code> and <code>api/</code> — never <code>server/</code> — so a
+            client-side <code>import { TDoc } from '@starter/shared'</code> can never accidentally pull
+            in BSON code.
+          </div>
+
+          <h2>Data flow</h2>
+          <pre><code>┌─────────────┐     tRPC      ┌─────────────┐
+│  Web / RN   │ ◄──────────► │  Server     │
+│  client     │               │  routers    │
+└─────────────┘               └─────────────┘
+       │                              │
+       │ React Query                  │ Adapter fns
+       │ hooks                        │ (DB ⇄ API)
+       ▼                              ▼
+@starter/api                   @starter/db
+       │                              │
+       │  shared types                │  MongoDB
+       └──────────► @starter/shared ──┘  native driver</code></pre>
+        </section>
+
+        <!-- PACKAGES -->
+        <section class="panel" id="packages" role="tabpanel">
+          <h2>Workspace packages</h2>
+          <p>
+            Each package has a single, narrow responsibility. Inter-package dependencies use
+            <code>workspace:*</code> via pnpm so internal versions are always in lockstep.
+          </p>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <div class="card-meta">@starter/shared</div>
+              <h3>Schemas, types, constants</h3>
+              <p>
+                Single source of truth: Zod schemas for every entity, inferred TypeScript types,
+                and shared constants like <code>PLAN_LIMITS</code> and category metadata. Imported
+                by every other package and both apps.
+              </p>
+              <p style="margin-top: 8px">
+                <span class="badge">no runtime deps on db / clerk / etc.</span>
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/db</div>
+              <h3>MongoDB layer</h3>
+              <p>
+                Native MongoDB driver (no Mongoose). Typed collection wrappers, index definitions,
+                and a <code>db:indexes</code> setup script. Server-only by construction — every
+                file starts with <code>import "server-only"</code>.
+              </p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @starter/shared</span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/trpc</div>
+              <h3>tRPC routers</h3>
+              <p>
+                Routers and a reusable <code>createBaseCrudRouter()</code> that wires standard
+                <code>get</code>, <code>getMany</code>, <code>create</code>, <code>update</code>,
+                <code>delete</code> procedures for any entity from its schemas.
+              </p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @starter/db</span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/api</div>
+              <h3>Client hooks</h3>
+              <p>
+                React Query hooks layered on top of tRPC procedures, plus a <code>useBasicCrudProcedure</code>
+                helper that mirrors the server-side base router. Used by both web and mobile.
+              </p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @starter/trpc</span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/ui</div>
+              <h3>Shared UI primitives</h3>
+              <p>
+                Intentionally minimal — the web app uses <code>shadcn/ui</code> directly (owned, not
+                imported), and mobile uses <code>rn-primitives</code>. This package is the seam
+                where truly cross-platform components would live if needed.
+              </p>
+              <p style="margin-top: 8px"><span class="badge warn">scaffolded</span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/web</div>
+              <h3>Next.js 15 app</h3>
+              <p>
+                App Router with route groups for marketing, auth, and dashboard. Turbopack dev,
+                tRPC API route, Stripe + Clerk webhooks, weekly-digest cron, push subscription
+                endpoints.
+              </p>
+              <p style="margin-top: 8px"><span class="badge">routes: /, /sign-in, /dashboard, /settings, /analytics, /privacy, /terms</span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">@starter/mobile</div>
+              <h3>Expo React Native app</h3>
+              <p>
+                Expo Router file-based navigation with auth and tabs (dashboard, items, groups,
+                analytics, settings). Pull-to-refresh on every data screen via the
+                <code>useRefresh</code> hook. Clerk auth, Expo push notifications.
+              </p>
+              <p style="margin-top: 8px"><span class="badge">tabs: dashboard, items, groups, analytics, settings</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="panel" id="features" role="tabpanel">
+          <h2>Authentication</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Clerk on web + mobile</h3>
+              <span class="badge good">production-grade</span>
+            </div>
+            <p>
+              Sign-in, sign-up, 2FA, social, session management — all via Clerk's hosted UIs and SDKs.
+              Web uses <code>@clerk/nextjs</code> middleware to gate routes; mobile uses
+              <code>@clerk/clerk-expo</code> with a token cache. Webhook (<code>/api/webhook/clerk</code>)
+              syncs user create/update/delete events into the local <code>users</code> collection.
+            </p>
+            <div class="feature-meta">
+              <code>middleware.ts</code> · <code>app/(auth)/*</code> · <code>app/api/webhook/clerk/route.ts</code>
+            </div>
+          </div>
+
+          <h2>Billing &amp; subscriptions</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Stripe with plan gating</h3>
+              <span class="badge good">free / pro tiers</span>
+            </div>
+            <p>
+              Stripe Checkout for upgrades, customer portal for self-service plan changes,
+              <code>/api/webhook/stripe</code> to sync subscription state to the user record.
+              <code>PLAN_LIMITS</code> constants in <code>@starter/shared/constants/plans</code>
+              drive plan-gated features (e.g., the analytics page).
+            </p>
+            <div class="feature-meta">
+              <code>app/api/stripe/*</code> · <code>app/api/webhook/stripe/route.ts</code>
+            </div>
+          </div>
+
+          <h2>Mobile app</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Expo with file-based routing</h3>
+              <span class="badge good">iOS + Android</span>
+            </div>
+            <p>
+              Expo Router gives Next.js-style file-based routing for React Native. Auth-gated tabs
+              (dashboard, items, groups, analytics, settings) all use the same tRPC backend as web,
+              with shared types from <code>@starter/shared</code>. Pull-to-refresh on every data
+              screen via <code>useRefresh</code> — calls <code>utils.invalidate()</code> to refetch
+              all queries.
+            </p>
+            <div class="feature-meta">
+              <code>apps/mobile/app/(tabs)/*</code> · <code>apps/mobile/hooks/use-refresh.ts</code>
+            </div>
+          </div>
+
+          <h2>Push notifications</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>VAPID web push + Expo push</h3>
+              <span class="badge">cross-platform</span>
+            </div>
+            <p>
+              Web uses the standard Push API with VAPID keys (generated via <code>web-push</code>);
+              mobile uses Expo's push service. Subscription management via
+              <code>/api/push/subscribe</code> and <code>/api/push/unsubscribe</code>. Device
+              registration tracked in the <code>devices</code> collection so the same user can
+              receive push to multiple browsers/devices.
+            </p>
+            <div class="feature-meta">
+              <code>app/api/push/*</code> · <code>app/api/device/*</code>
+            </div>
+          </div>
+
+          <h2>Email</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Resend + weekly digest cron</h3>
+              <span class="badge">scheduled</span>
+            </div>
+            <p>
+              Transactional sends via Resend. Weekly digest job at
+              <code>/api/cron/weekly-digest</code> protected by a <code>CRON_SECRET</code>
+              header — meant to run on Vercel Cron or any scheduled trigger. React Email templates
+              keep markup type-safe.
+            </p>
+            <div class="feature-meta">
+              <code>app/api/cron/weekly-digest/route.ts</code>
+            </div>
+          </div>
+
+          <h2>Deep linking</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Universal Links + App Links</h3>
+              <span class="badge">native handoff</span>
+            </div>
+            <p>
+              <code>.well-known/apple-app-site-association</code> and
+              <code>.well-known/assetlinks.json</code> served as Next.js routes from the web app
+              so iOS / Android can verify domain ownership and open the mobile app for matching
+              URLs. Configured via <code>APPLE_TEAM_ID</code> and
+              <code>ANDROID_SHA256_FINGERPRINT</code> env vars.
+            </p>
+          </div>
+
+          <h2>Base CRUD pattern</h2>
+          <div class="feature">
+            <div class="feature-title">
+              <h3>Reusable tRPC procedures + React Query hooks</h3>
+              <span class="badge">DRY</span>
+            </div>
+            <p>
+              Each entity gets a router from <code>createBaseCrudRouter()</code> wired with its
+              schemas — exposing <code>get</code>, <code>getMany</code>, <code>create</code>,
+              <code>update</code>, <code>delete</code>. The matching <code>useBasicCrudProcedure</code>
+              hook in <code>@starter/api</code> mirrors that on the client. Adding a new entity
+              = define schemas, mount router, get a typed client.
+            </p>
+            <div class="feature-meta">
+              <code>packages/trpc/src/routers/_template/router.ts</code>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONVENTIONS -->
+        <section class="panel" id="conventions" role="tabpanel">
+          <h2>Code conventions</h2>
+          <p>Enforced by ESLint, Prettier, and code review. CLAUDE.md captures these for AI assistants.</p>
+
+          <div class="card">
+            <div class="conv-row">
+              <div class="conv-icon">a-z</div>
+              <div class="conv-body">
+                <strong>kebab-case file names — only</strong>
+                <p>
+                  <code>my-component.tsx</code>, never <code>MyComponent.tsx</code>.
+                  <code>use-my-hook.ts</code>, never <code>useMyHook.ts</code>. Folders too.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">ex</div>
+              <div class="conv-body">
+                <strong>Named exports</strong>
+                <p>
+                  <code>export function Foo()</code> — never <code>export default</code>. Exception:
+                  Next.js page components, which the framework requires to be default exports.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">ui</div>
+              <div class="conv-body">
+                <strong>shadcn/ui components, not raw HTML</strong>
+                <p>
+                  <code>&lt;Button&gt;</code> over <code>&lt;button&gt;</code>,
+                  <code>&lt;Input&gt;</code> over <code>&lt;input&gt;</code>,
+                  <code>&lt;Skeleton&gt;</code> for loading,
+                  <code>&lt;Alert&gt;</code> for errors.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">∀</div>
+              <div class="conv-body">
+                <strong>Every component handles four states</strong>
+                <p>
+                  Loading (<code>&lt;Skeleton&gt;</code>), Error
+                  (<code>&lt;Alert variant="destructive"&gt;</code>), Empty (with meaningful copy),
+                  and Success. No "happy path only" components.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">↻</div>
+              <div class="conv-body">
+                <strong>Pull-to-refresh on every mobile data screen</strong>
+                <p>
+                  Use the <code>useRefresh</code> hook —
+                  <code>{'<RefreshControl refreshing={refreshing} onRefresh={onRefresh} /&gt;'}</code>
+                  on ScrollView, or built-in props on FlatList. Calls
+                  <code>utils.invalidate()</code> to refetch all queries.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">3✕</div>
+              <div class="conv-body">
+                <strong>Three-tier schema separation</strong>
+                <p>
+                  Every database entity has <code>client/</code>, <code>api/</code>, and
+                  <code>server/</code> folders with explicit adapter functions between layers.
+                  Zod is the source of truth — types are inferred, never written by hand.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">⊥</div>
+              <div class="conv-body">
+                <strong>No Mongoose</strong>
+                <p>
+                  Native <code>mongodb</code> driver only. Schemas live in
+                  <code>@starter/shared</code>, not in model classes that try to be both validators
+                  and ORMs.
+                </p>
+              </div>
+            </div>
+            <div class="conv-row">
+              <div class="conv-icon">🔒</div>
+              <div class="conv-body">
+                <strong>"server-only" guard on every server file</strong>
+                <p>
+                  Every file under <code>server/</code> opens with
+                  <code>import "server-only"</code>. Entity barrels never re-export from
+                  <code>server/</code>, so client bundles can't drag in ObjectId / BSON code.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <h2>Conventional commits</h2>
+          <p>
+            Commit messages use <code>feat:</code>, <code>fix:</code>, <code>chore:</code>,
+            <code>refactor:</code>, <code>test:</code>, <code>docs:</code>, <code>style:</code>
+            prefixes. Pre-commit hook runs lint-staged (ESLint + Prettier on changed files) and
+            <code>pnpm type-check</code>; pre-push hook runs a full type-check across the workspace.
+          </p>
+        </section>
+
+        <!-- SETUP -->
+        <section class="panel" id="setup" role="tabpanel">
+          <h2>Quick start</h2>
+          <pre><code>pnpm install
+./scripts/setup-env.sh         # creates .env.local + apps/mobile/.env, generates CRON_SECRET
+# fill in MONGODB_URI and Clerk keys at minimum
+pnpm db:indexes                # create MongoDB indexes
+pnpm dev                       # web on http://localhost:3000</code></pre>
+
+          <p>For the mobile app:</p>
+          <pre><code>cd apps/mobile
+npx expo start --go</code></pre>
+
+          <h2>Required env vars</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Var</th>
+                <th>Where</th>
+                <th>Required for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>MONGODB_URI</code></td>
+                <td>.env.local</td>
+                <td>Anything that touches data</td>
+              </tr>
+              <tr>
+                <td><code>MONGODB_DB</code></td>
+                <td>.env.local</td>
+                <td>Anything that touches data</td>
+              </tr>
+              <tr>
+                <td><code>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code></td>
+                <td>.env.local</td>
+                <td>Auth (web)</td>
+              </tr>
+              <tr>
+                <td><code>CLERK_SECRET_KEY</code></td>
+                <td>.env.local</td>
+                <td>Auth (web, server)</td>
+              </tr>
+              <tr>
+                <td><code>CLERK_WEBHOOK_SECRET</code></td>
+                <td>.env.local</td>
+                <td>User sync webhook</td>
+              </tr>
+              <tr>
+                <td><code>EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY</code></td>
+                <td>apps/mobile/.env</td>
+                <td>Auth (mobile)</td>
+              </tr>
+              <tr>
+                <td><code>EXPO_PUBLIC_API_URL</code></td>
+                <td>apps/mobile/.env</td>
+                <td>Mobile → web tRPC; use LAN IP, not localhost</td>
+              </tr>
+              <tr>
+                <td><code>STRIPE_SECRET_KEY</code></td>
+                <td>.env.local</td>
+                <td>Billing</td>
+              </tr>
+              <tr>
+                <td><code>STRIPE_WEBHOOK_SECRET</code></td>
+                <td>.env.local</td>
+                <td>Subscription sync</td>
+              </tr>
+              <tr>
+                <td><code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code></td>
+                <td>.env.local</td>
+                <td>Billing (client)</td>
+              </tr>
+              <tr>
+                <td><code>RESEND_API_KEY</code></td>
+                <td>.env.local</td>
+                <td>Email</td>
+              </tr>
+              <tr>
+                <td><code>CRON_SECRET</code></td>
+                <td>.env.local</td>
+                <td>Cron auth (auto-generated by setup script)</td>
+              </tr>
+              <tr>
+                <td><code>NEXT_PUBLIC_VAPID_PUBLIC_KEY</code> / <code>VAPID_PRIVATE_KEY</code></td>
+                <td>.env.local</td>
+                <td>Web push</td>
+              </tr>
+              <tr>
+                <td><code>APPLE_TEAM_ID</code> / <code>ANDROID_SHA256_FINGERPRINT</code></td>
+                <td>.env.local</td>
+                <td>Deep linking (Universal / App Links)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Commands</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Command</th>
+                <th>What it does</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>pnpm dev</code></td>
+                <td>Start all dev servers (web + mobile if configured) via Turborepo</td>
+              </tr>
+              <tr>
+                <td><code>pnpm build</code></td>
+                <td>Build every package and app</td>
+              </tr>
+              <tr>
+                <td><code>pnpm check</code></td>
+                <td>Full quality suite: lint + format:check + type-check + tests</td>
+              </tr>
+              <tr>
+                <td><code>pnpm lint:fix</code></td>
+                <td>Auto-fix lint issues across the workspace</td>
+              </tr>
+              <tr>
+                <td><code>pnpm format</code></td>
+                <td>Auto-format with Prettier</td>
+              </tr>
+              <tr>
+                <td><code>pnpm test:run</code></td>
+                <td>Run Vitest once (CI mode)</td>
+              </tr>
+              <tr>
+                <td><code>pnpm db:indexes</code></td>
+                <td>Create MongoDB indexes from definitions</td>
+              </tr>
+              <tr>
+                <td><code>pnpm db:setup</code></td>
+                <td>Create indexes after a DB wipe</td>
+              </tr>
+              <tr>
+                <td><code>./scripts/setup-env.sh</code></td>
+                <td>Bootstrap env files from <code>.env.example</code> and <code>apps/mobile/.env.example</code></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>Customizing for your project</h2>
+          <ol>
+            <li>Rename <code>@starter/*</code> packages to <code>@yourproject/*</code> across all <code>package.json</code> files and imports.</li>
+            <li>Update branding (app name, icons, colors in <code>globals.css</code>).</li>
+            <li>Replace the example <code>Item</code> entity with your domain entities, following the three-tier schema pattern.</li>
+            <li>Add your pages, components, and tRPC routers.</li>
+            <li>Configure Stripe products and prices for your pricing tiers.</li>
+          </ol>
+        </section>
+
+        <!-- TOOLING -->
+        <section class="panel" id="tooling" role="tabpanel">
+          <h2>Quality tooling</h2>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <div class="card-meta">turbo.json</div>
+              <h3>Turborepo</h3>
+              <p>
+                Modern <code>tasks</code> syntax (not legacy <code>pipeline</code>). Cached
+                <code>build</code>, <code>lint</code>, <code>type-check</code>,
+                <code>test:run</code>. <code>dev</code> marked persistent + uncached. Vercel
+                deploy uses <code>turbo-ignore</code> to skip rebuilds when only mobile changed.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">tsconfig.base.json</div>
+              <h3>TypeScript 5.8 (strict)</h3>
+              <p>
+                Strict mode on. Modern JSX transform (<code>react-jsx</code>). Each package
+                extends the base config and overrides only what it needs (e.g., mobile uses
+                Expo's tsconfig).
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">eslint.config.mjs</div>
+              <h3>ESLint 9 (flat config)</h3>
+              <p>
+                Flat config, not legacy <code>.eslintrc</code>. Rules from
+                <code>typescript-eslint</code> and <code>eslint-plugin-react</code>. shadcn/ui
+                components in <code>components/ui/</code> are excluded — they're owned but
+                not authored.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">.prettierrc</div>
+              <h3>Prettier</h3>
+              <p>
+                Tailwind-aware (<code>prettier-plugin-tailwindcss</code> sorts class names) and
+                import-sort plugin keeps imports tidy. Runs via lint-staged on commit and
+                <code>pnpm format</code> on demand.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">vitest.config.ts</div>
+              <h3>Vitest + Testing Library</h3>
+              <p>
+                ESM-native, jsdom environment, mocks for Clerk and Next.js navigation in the
+                test setup. Tests co-located in <code>__tests__/</code> directories. Sample
+                tests cover helpers (slug generation), shared components (<code>PageHeader</code>,
+                <code>EmptyState</code>), and dashboard cards.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">.husky/</div>
+              <h3>Git hooks</h3>
+              <p>
+                <strong>pre-commit:</strong> <code>lint-staged</code> (ESLint + Prettier on
+                changed files) then <code>pnpm type-check</code>.<br />
+                <strong>pre-push:</strong> full <code>pnpm build</code> across the workspace.
+                Both hooks must pass before code lands.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">vercel.json</div>
+              <h3>Vercel deploy</h3>
+              <p>
+                Monorepo-aware: <code>buildCommand</code> uses
+                <code>turbo build --filter=@starter/web...</code> so only the web app and its
+                deps build. <code>turbo-ignore</code> skips the build entirely for changes
+                that don't affect web.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-meta">pnpm-workspace.yaml</div>
+              <h3>pnpm workspaces</h3>
+              <p>
+                <code>apps/*</code> and <code>packages/*</code> globbed.
+                <code>node-linker=hoisted</code> in <code>.npmrc</code> for compatibility with
+                tooling that doesn't grok pnpm's symlinked layout (notably parts of the
+                React Native + Expo stack).
+              </p>
+            </div>
+          </div>
+
+          <h2>Pre-commit guardrails</h2>
+          <pre><code>// lint-staged.config.mjs
+{
+  '*.{js,jsx,ts,tsx,mjs,cjs}': ['eslint --no-warn-ignored --fix', 'prettier --write'],
+  '*.css': ['prettier --write'],
+}</code></pre>
+
+          <h2>Production build flow</h2>
+          <ol>
+            <li><code>git commit</code> → pre-commit hook runs lint-staged + type-check</li>
+            <li><code>git push</code> → pre-push hook runs <code>pnpm build</code> (full Next.js production build)</li>
+            <li>Vercel webhook fires → <code>turbo-ignore</code> checks if web changed</li>
+            <li>If yes, <code>turbo build --filter=@starter/web...</code> runs with cached deps</li>
+            <li>Edge functions, middleware, and static assets ship</li>
+          </ol>
+
+          <div class="callout">
+            <strong>Cache hygiene:</strong> Turborepo's content-addressed cache means a no-op change
+            to <code>@starter/web</code> can replay logs from a hit in milliseconds — but a change to
+            <code>@starter/shared</code> correctly invalidates everything downstream.
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        Single-page overview · Generated for the starter monorepo · Source of truth lives in
+        <code>README.md</code>, <code>CLAUDE.md</code>, and the <code>docs/</code> folder
+      </footer>
+    </div>
+
+    <script>
+      // Tab switching
+      const tabs = document.querySelectorAll('.tab');
+      const panels = document.querySelectorAll('.panel');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.tab;
+          tabs.forEach((t) => t.classList.toggle('active', t === tab));
+          panels.forEach((p) => p.classList.toggle('active', p.id === target));
+          if (history.replaceState) {
+            history.replaceState(null, '', '#' + target);
+          }
+        });
+      });
+
+      // Open initial tab from hash
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById(hash)) {
+        const target = document.querySelector('.tab[data-tab="' + hash + '"]');
+        if (target) target.click();
+      }
+
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', initial);
+
+      themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    </script>
+  </body>
+</html>
