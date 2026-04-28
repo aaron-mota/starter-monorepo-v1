@@ -11,3 +11,4 @@ apps/web/src/components/ui/*
 apps/mobile/components/ui/*
 apps/mobile/.expo/
 apps/mobile/expo-env.d.ts
+apps/web/next-env.d.ts
