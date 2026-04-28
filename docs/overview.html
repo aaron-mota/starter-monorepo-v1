@@ -1069,13 +1069,25 @@
 
           <h3>Layer 3 — Components</h3>
           <p>
-            Lives in <code>apps/web/src/components/</code>. Currently organized by feature
-            (dashboard, settings, layout, shared, ui) rather than per-entity. If a project grows to need
-            entity-keyed components (forms, tables, cards specific to an entity), add a
-            <code>components/database/&lt;entity&gt;/</code> folder following the same <code>_template</code>
-            convention used at the schema and router layers.
+            Lives in <code>apps/web/src/components/</code>. Per-entity UI sits under
+            <code>database/&lt;entity&gt;/</code> with <code>client/</code> + <code>server/</code> subfolders
+            and the same <code>_template</code> convention as the schema and router layers — duplicate
+            <code>_template/</code>, rename, fill in the entity-specific pieces. Cross-feature components
+            (header, page chrome, shared primitives, shadcn) stay outside <code>database/</code>.
           </p>
           <pre class="tree"><span class="dir">apps/web/src/components/</span>
+├── <span class="dir">database/</span>
+│   ├── _lib/                  <span class="comment"># shared hooks across all entity components (use-mutations, ...)</span>
+│   └── _template/             <span class="comment"># clone &amp; rename to scaffold a new entity's UI</span>
+│       ├── <span class="dir">client/</span>
+│       │   ├── _config.ts     <span class="comment"># re-exports TYPE + types from the entity's schema</span>
+│       │   ├── _lib/          <span class="comment"># entity-specific mutation hooks</span>
+│       │   ├── forms/         <span class="comment"># form-crud.tsx (create + update)</span>
+│       │   ├── tables/        <span class="comment"># table-docs-default.tsx</span>
+│       │   ├── buttons/       <span class="comment"># button-delete.tsx, ...</span>
+│       │   └── index.ts
+│       └── <span class="dir">server/</span>
+│           └── sidebar-menu-item.tsx  <span class="comment"># server-rendered nav entry</span>
 ├── ui/                    <span class="comment"># shadcn primitives (owned, not imported)</span>
 ├── shared/                <span class="comment"># cross-feature components (PageHeader, EmptyState, ...)</span>
 ├── layout/                <span class="comment"># MobileHeader, sidebar, ...</span>
