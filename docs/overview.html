@@ -586,6 +586,7 @@
       <nav class="tabs" role="tablist">
         <button class="tab active" data-tab="overview" role="tab">Overview</button>
         <button class="tab" data-tab="architecture" role="tab">Architecture</button>
+        <button class="tab" data-tab="data-system" role="tab">Data System</button>
         <button class="tab" data-tab="packages" role="tab">Packages</button>
         <button class="tab" data-tab="features" role="tab">Features</button>
         <button class="tab" data-tab="conventions" role="tab">Conventions</button>
@@ -993,6 +994,146 @@
        │                              │
        │  shared types                │  MongoDB
        └──────────► @app/shared ──┘  native driver</code></pre>
+        </section>
+
+        <!-- DATA SYSTEM -->
+        <section class="panel" id="data-system" role="tabpanel">
+          <h2>Data System</h2>
+          <p>
+            Every entity in the project flows through the same three layers: <strong>schemas</strong> (Zod, the
+            source of truth), <strong>routers</strong> (tRPC server + React Query client), and
+            <strong>components</strong> (UI). Each layer has an <code>_template/</code> folder you duplicate to
+            add a new entity, and the schema and client-router layers have a <code>database/</code> +
+            <code>external/</code> split so 3rd-party services hook into the same pattern as app-owned data.
+          </p>
+
+          <h3>Layer 1 — Schemas</h3>
+          <p>
+            Lives in <code>packages/shared/schemas/</code>. Zod is the source of truth — every TypeScript type
+            is inferred from a schema, and every entity has client / api / server flavors with adapter functions
+            between them. (See the <strong>Architecture</strong> tab for the three-tier deep-dive.)
+          </p>
+          <pre class="tree"><span class="dir">packages/shared/schemas/</span>
+├── <span class="dir">database/</span>            <span class="comment"># app-owned entities</span>
+│   ├── _template/         <span class="comment"># clone &amp; rename to add a new entity</span>
+│   ├── _lib/              <span class="comment"># shared schema helpers (extractDefaultsFromSchema, ...)</span>
+│   ├── _partial/          <span class="comment"># reusable shape fragments (timestamps, device-info, ...)</span>
+│   ├── user/              <span class="comment"># client/, api/, server/, _config.ts, index.ts</span>
+│   ├── item/
+│   ├── company/
+│   ├── company-user/
+│   ├── device-registration/
+│   ├── subscription-company/
+│   └── subscription-user/
+└── <span class="dir">external/</span>            <span class="comment"># 3rd-party data shapes (Stripe, Resend, Clerk webhooks, ...)</span>
+    ├── _template/         <span class="comment"># clone &amp; rename for a new external service</span>
+    ├── _lib/
+    └── _partial/</pre>
+
+          <h3>Layer 2 — Routers</h3>
+          <p>Two pieces sharing the same per-entity convention.</p>
+
+          <h3 style="margin-top: 16px">Server side: tRPC</h3>
+          <p>
+            Lives in <code>packages/trpc/src/routers/</code>. Each entity folder
+            (<code>_config.ts</code>, <code>router.ts</code>, <code>index.ts</code>) composes a tRPC router from
+            the entity's schemas + adapters via <code>createBaseRouter()</code> in <code>_base.ts</code>.
+          </p>
+          <pre class="tree"><span class="dir">packages/trpc/src/routers/</span>
+├── _template/             <span class="comment"># clone &amp; rename to expose a new entity over tRPC</span>
+├── _lib/                  <span class="comment"># createBaseRouter() helpers (createFn, getMany, update, ...)</span>
+├── _base.ts               <span class="comment"># createBaseRouter() — generic CRUD assembly</span>
+├── _app.ts                <span class="comment"># composed app router (registers each entity)</span>
+├── user/
+│   ├── _config.ts         <span class="comment"># re-exports schemas + adapters from @app/shared</span>
+│   ├── router.ts          <span class="comment"># wires createBaseRouter and exposes selected procedures</span>
+│   └── index.ts
+├── item/
+└── device-registration/</pre>
+
+          <h3 style="margin-top: 16px">Client side: React Query hooks</h3>
+          <p>
+            Lives in <code>packages/api/src/routers/</code>. Mirrors the schema folder's
+            <code>database/</code> + <code>external/</code> split: <code>database/</code> for entities flowing
+            through the local tRPC server, <code>external/</code> for direct calls to 3rd-party APIs.
+          </p>
+          <pre class="tree"><span class="dir">packages/api/src/routers/</span>
+├── <span class="dir">database/</span>
+│   ├── _template/         <span class="comment"># clone &amp; rename for a new app entity client</span>
+│   ├── user/
+│   ├── item/
+│   ├── subscription-company/
+│   └── subscription-user/
+└── <span class="dir">external/</span>
+    └── _template/         <span class="comment"># clone &amp; rename for a new external API client</span></pre>
+
+          <h3>Layer 3 — Components</h3>
+          <p>
+            Lives in <code>apps/web/src/components/</code>. Currently organized by feature
+            (dashboard, settings, layout, shared, ui) rather than per-entity. If a project grows to need
+            entity-keyed components (forms, tables, cards specific to an entity), add a
+            <code>components/database/&lt;entity&gt;/</code> folder following the same <code>_template</code>
+            convention used at the schema and router layers.
+          </p>
+          <pre class="tree"><span class="dir">apps/web/src/components/</span>
+├── ui/                    <span class="comment"># shadcn primitives (owned, not imported)</span>
+├── shared/                <span class="comment"># cross-feature components (PageHeader, EmptyState, ...)</span>
+├── layout/                <span class="comment"># MobileHeader, sidebar, ...</span>
+├── dashboard/             <span class="comment"># StatCard, dashboard-specific UI</span>
+└── settings/              <span class="comment"># NotificationPreferences, devices UI, ...</span></pre>
+
+          <h3>Adding a new entity</h3>
+          <p>A concrete recipe — duplicate the <code>_template</code> at each layer, rename, wire up:</p>
+          <ol>
+            <li>
+              <strong>Schema</strong> — copy <code>packages/shared/schemas/database/_template/</code> to
+              <code>.../&lt;entity-name&gt;/</code>. Update <code>_config.ts</code> with the entity's
+              <code>TYPE</code> (router name, collection name) and define the Zod schemas in
+              <code>client/schema.ts</code>, <code>api/schema.ts</code>, <code>server/schema.ts</code>.
+            </li>
+            <li>
+              <strong>Server router</strong> — copy <code>packages/trpc/src/routers/_template/</code> to
+              <code>.../&lt;entity-name&gt;/</code>. Uncomment the <code>createBaseRouter()</code> wiring in
+              <code>router.ts</code> and pick which procedures to expose (<code>getSingleById</code>,
+              <code>getMany</code>, <code>create</code>, <code>update</code>, <code>delete</code>, etc.).
+              Register the new router in <code>routers/_app.ts</code>.
+            </li>
+            <li>
+              <strong>Client router</strong> — copy
+              <code>packages/api/src/routers/database/_template/</code> to
+              <code>.../&lt;entity-name&gt;/</code>. Wire up the <code>useBasicCRUDProcedure</code> hooks for
+              the React Query side.
+            </li>
+            <li>
+              <strong>MongoDB indexes</strong> — register the new collection name + indexes in
+              <code>@app/db</code>'s setup, then run <code>pnpm db:indexes</code>.
+            </li>
+            <li>
+              <strong>Components</strong> (optional, if needed) — create entity-specific UI under
+              <code>apps/web/src/components/...</code>, following the four-state convention
+              (loading / error / empty / success).
+            </li>
+            <li>
+              <strong>Verify</strong> — <code>pnpm check</code> + <code>pnpm build</code>.
+            </li>
+          </ol>
+
+          <div class="callout">
+            <strong>The pattern's value:</strong> adding a new entity is mechanical — duplicate three folders,
+            rename, fill in the schema, and a full typed CRUD surface (server procedures, client hooks,
+            validation, adapter boundaries) wires up automatically. The <code>_template</code> folders are the
+            executable specification of the pattern; the existing entities (<code>user</code>,
+            <code>item</code>, <code>device-registration</code>) are real working examples to model on.
+          </div>
+
+          <h3>The <code>external/</code> sibling</h3>
+          <p>
+            Wherever <code>database/</code> exists in this system, an <code>external/</code> folder lives
+            alongside it for 3rd-party integrations (Stripe customer/subscription shapes, Resend webhook
+            payloads, Clerk user events, etc.) that need typed schemas and client adapters but don't live in
+            our MongoDB. They follow the same <code>_template</code> convention so adding a new external
+            integration is as mechanical as adding a new app entity.
+          </p>
         </section>
 
         <!-- PACKAGES -->
