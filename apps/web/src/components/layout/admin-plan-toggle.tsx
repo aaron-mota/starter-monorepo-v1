@@ -1,6 +1,6 @@
 'use client';
 
-import type { PlanTier } from '@starter/shared/constants/plans';
+import type { PlanTier } from '@app/shared/constants/plans';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { trpc, useCurrentUser } from '@/lib/hooks';

@@ -1,2 +1,2 @@
-// export * from '@starter/shared/schemas/database/_template/server/_config';
+// export * from '@app/shared/schemas/database/_template/server/_config';
 export {};

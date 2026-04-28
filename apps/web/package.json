@@ -1,5 +1,5 @@
 {
-  "name": "@starter/web",
+  "name": "@app/web",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -13,11 +13,11 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "@starter/api": "workspace:*",
-    "@starter/db": "workspace:*",
-    "@starter/shared": "workspace:*",
-    "@starter/trpc": "workspace:*",
-    "@starter/ui": "workspace:*",
+    "@app/api": "workspace:*",
+    "@app/db": "workspace:*",
+    "@app/shared": "workspace:*",
+    "@app/trpc": "workspace:*",
+    "@app/ui": "workspace:*",
     "@clerk/nextjs": "^6.38.2",
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-query": "^5.80.7",

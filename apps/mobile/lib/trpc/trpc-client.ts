@@ -2,7 +2,7 @@ import { getClerkInstance } from '@clerk/clerk-expo';
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
 import superjson from 'superjson';
-import type { AppRouter } from '@starter/trpc';
+import type { AppRouter } from '@app/trpc';
 
 export const trpc = createTRPCReact<AppRouter>();
 

@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { getSubscriptionTier } from '../../stripe/_lib/constants';
-import { getDb } from '@starter/db';
+import { getDb } from '@app/db';
 import { getStripe } from '@/lib/services/stripe/stripe';
 
 function getWebhookSecret(): string {

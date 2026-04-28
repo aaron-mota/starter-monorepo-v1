@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { resolveUserPlan } from '../lib/resolve-user-plan';
-import { PLAN_LIMITS } from '@starter/shared/constants/plans';
+import { PLAN_LIMITS } from '@app/shared/constants/plans';
 import { TRPCError } from '@trpc/server';
 import { ObjectId } from 'mongodb';
 import type { Db } from 'mongodb';

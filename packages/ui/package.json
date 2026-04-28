@@ -1,5 +1,5 @@
 {
-  "name": "@starter/ui",
+  "name": "@app/ui",
   "version": "0.0.1",
   "private": true,
   "scripts": {

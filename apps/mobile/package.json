@@ -1,5 +1,5 @@
 {
-  "name": "@starter/mobile",
+  "name": "@app/mobile",
   "main": "expo-router/entry",
   "version": "0.0.1",
   "private": true,
@@ -11,8 +11,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@starter/shared": "workspace:*",
-    "@starter/trpc": "workspace:*",
+    "@app/shared": "workspace:*",
+    "@app/trpc": "workspace:*",
     "@clerk/clerk-expo": "^2.11.7",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.3.10",

@@ -1,6 +1,6 @@
 'use client';
 
-import { PLAN_LIMITS } from '@starter/shared/constants/plans';
+import { PLAN_LIMITS } from '@app/shared/constants/plans';
 import { PageHeader } from '@/components/shared/page-header';
 import { UpgradePrompt } from '@/components/shared/upgrade-prompt';
 import { Alert, AlertDescription } from '@/components/ui/alert';

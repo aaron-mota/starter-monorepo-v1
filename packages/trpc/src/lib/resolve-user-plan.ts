@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { ObjectId } from 'mongodb';
-import type { PlanTier } from '@starter/shared/constants/plans';
+import type { PlanTier } from '@app/shared/constants/plans';
 import type { Db } from 'mongodb';
 
 export function resolveUserPlanFromDoc(user: { plan?: string; planOverride?: string | null }): PlanTier {

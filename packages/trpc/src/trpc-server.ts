@@ -1,8 +1,8 @@
 import 'server-only';
 
+import { connectToDatabase } from '@app/db';
 import { verifyToken } from '@clerk/backend';
 import { auth } from '@clerk/nextjs/server';
-import { connectToDatabase } from '@starter/db';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { z, ZodError } from 'zod';

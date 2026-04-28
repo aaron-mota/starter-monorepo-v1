@@ -1,4 +1,4 @@
-import { connectToDatabase } from '@starter/db';
+import { connectToDatabase } from '@app/db';
 import { TRPCError } from '@trpc/server';
 import type { Db } from 'mongodb';
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ensureSubscriptionUser } from '../_lib/ensure-subscription-user';
+import { getDb } from '@app/db';
 import { auth } from '@clerk/nextjs/server';
-import { getDb } from '@starter/db';
 import { getStripe } from '@/lib/services/stripe/stripe';
 
 export async function GET() {

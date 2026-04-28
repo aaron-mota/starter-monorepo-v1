@@ -64,19 +64,19 @@ starter-monorepo-base/
 
 | Package | Name | Description |
 |---------|------|-------------|
-| `packages/shared` | `@starter/shared` | Zod schemas, TypeScript types, constants (plan limits, etc.) |
-| `packages/db` | `@starter/db` | MongoDB native driver, typed collections, index definitions |
-| `packages/trpc` | `@starter/trpc` | tRPC routers with reusable base CRUD procedures |
-| `packages/api` | `@starter/api` | REST API client layer with React Query hooks |
-| `packages/ui` | `@starter/ui` | Shared UI components |
-| `apps/web` | `@starter/web` | Next.js 15 web application |
-| `apps/mobile` | `@starter/mobile` | React Native (Expo) mobile application |
+| `packages/shared` | `@app/shared` | Zod schemas, TypeScript types, constants (plan limits, etc.) |
+| `packages/db` | `@app/db` | MongoDB native driver, typed collections, index definitions |
+| `packages/trpc` | `@app/trpc` | tRPC routers with reusable base CRUD procedures |
+| `packages/api` | `@app/api` | REST API client layer with React Query hooks |
+| `packages/ui` | `@app/ui` | Shared UI components |
+| `apps/web` | `@app/web` | Next.js 15 web application |
+| `apps/mobile` | `@app/mobile` | React Native (Expo) mobile application |
 
 ### Dependency Graph
 
 ```
-@starter/shared → @starter/db → @starter/trpc → @starter/api → @starter/web
-                                                              → @starter/mobile
+@app/shared → @app/db → @app/trpc → @app/api → @app/web
+                                                              → @app/mobile
 ```
 
 No circular dependencies allowed.
@@ -170,7 +170,7 @@ See [CLAUDE.md](./CLAUDE.md) for the complete list of conventions and patterns.
 
 Once everything runs, make it yours:
 
-1. Rename `@starter/*` packages to `@yourproject/*` across all `package.json` files and imports
+1. Rename `@app/*` packages to `@yourproject/*` across all `package.json` files and imports
 2. Update app branding (name, icons, colors in `globals.css`)
 3. Replace the example `Item` entity with your domain entities using the three-tier schema pattern
 4. Add your pages, components, and API routes

@@ -1,4 +1,4 @@
-export * from '@starter/shared/schemas/database/user/client/_config';
+export * from '@app/shared/schemas/database/user/client/_config';
 export {
   adapterFnDbToFE,
   adapterFnFEToDbCreate,
@@ -7,4 +7,4 @@ export {
   schemaDb,
   schemaDbCreate,
   schemaDbUpdate,
-} from '@starter/shared/schemas/database/user/server/_config';
+} from '@app/shared/schemas/database/user/server/_config';

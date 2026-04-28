@@ -1,5 +1,5 @@
 {
-  "name": "@starter/api",
+  "name": "@app/api",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -14,7 +14,7 @@
     "./src/*": "./src/*"
   },
   "dependencies": {
-    "@starter/shared": "workspace:*",
+    "@app/shared": "workspace:*",
     "@tanstack/react-query": "^5.80.7",
     "zod": "^4.0.0"
   },

@@ -1,4 +1,4 @@
-export * from '@starter/shared/schemas/database/device-registration/client/_config';
+export * from '@app/shared/schemas/database/device-registration/client/_config';
 export {
   adapterFnDbToFE,
   adapterFnFEToDbCreate,
@@ -7,4 +7,4 @@ export {
   schemaDb,
   schemaDbCreate,
   schemaDbUpdate,
-} from '@starter/shared/schemas/database/device-registration/server/_config';
+} from '@app/shared/schemas/database/device-registration/server/_config';

@@ -149,7 +149,7 @@ EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 
 > **Troubleshooting:**
 > - "User not found" after sign-up → Clerk webhook isn't firing. Either set up ngrok + webhook, or manually create the user doc in MongoDB.
-> - Build errors about `@starter/*` → Run `pnpm install` again from the root.
+> - Build errors about `@app/*` → Run `pnpm install` again from the root.
 > - Type errors → Run `pnpm type-check` to see all issues.
 
 ## Phase 6: Run the Mobile App
@@ -260,7 +260,7 @@ A development build is a custom native app compiled with all your native modules
 
 Once everything runs, start making it yours:
 
-- [ ] Rename `@starter/*` packages to `@yourproject/*` across all package.json files and imports
+- [ ] Rename `@app/*` packages to `@yourproject/*` across all package.json files and imports
 - [ ] Update app branding (name, icons, colors in globals.css)
 - [ ] Replace the example `Item` entity with your domain entities
 - [ ] Add your pages and components

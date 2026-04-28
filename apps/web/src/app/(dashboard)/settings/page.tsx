@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { PLAN_LIMITS } from '@starter/shared/constants/plans';
+import { PLAN_LIMITS } from '@app/shared/constants/plans';
 import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle, Mail, Monitor, Smartphone, Trash2, XCircle } from 'lucide-react';
 import { NotificationPreferences } from '@/components/settings/notification-preferences';

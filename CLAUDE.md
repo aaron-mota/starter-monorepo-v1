@@ -30,12 +30,12 @@ pnpm db:setup     # Create indexes (run after DB wipe)
 
 | Package | Name | Description |
 |---|---|---|
-| `packages/shared` | `@starter/shared` | Zod schemas, types, constants |
-| `packages/db` | `@starter/db` | MongoDB native driver, typed collections |
-| `packages/trpc` | `@starter/trpc` | tRPC routers and base CRUD procedures |
-| `packages/api` | `@starter/api` | REST API client layer with React Query hooks |
-| `packages/ui` | `@starter/ui` | Shared UI components |
-| `apps/web` | `@starter/web` | Next.js 15 web application |
+| `packages/shared` | `@app/shared` | Zod schemas, types, constants |
+| `packages/db` | `@app/db` | MongoDB native driver, typed collections |
+| `packages/trpc` | `@app/trpc` | tRPC routers and base CRUD procedures |
+| `packages/api` | `@app/api` | REST API client layer with React Query hooks |
+| `packages/ui` | `@app/ui` | Shared UI components |
+| `apps/web` | `@app/web` | Next.js 15 web application |
 
 ## Key Conventions
 
@@ -126,13 +126,13 @@ const { refreshing, onRefresh } = useRefresh();
 ```
 The hook calls `utils.invalidate()` which refetches all tRPC queries. This is the standard pattern -- do not skip it.
 
-### @starter/shared Imports
+### @app/shared Imports
 
-The main entry (`@starter/shared`) only exports schema types. Constants use subpath imports via `typesVersions`:
-- `@starter/shared/constants/categories` -- category display names and icons
-- `@starter/shared/constants/plans` -- `PLAN_LIMITS`, `PlanTier`
+The main entry (`@app/shared`) only exports schema types. Constants use subpath imports via `typesVersions`:
+- `@app/shared/constants/categories` -- category display names and icons
+- `@app/shared/constants/plans` -- `PLAN_LIMITS`, `PlanTier`
 
-Never import constants from `@starter/shared` directly -- it will cause a build error.
+Never import constants from `@app/shared` directly -- it will cause a build error.
 
 ### Testing
 
@@ -158,7 +158,7 @@ This runs: lint -> format:check -> type-check -> test:run
 ## Dependency Graph
 
 ```
-@starter/shared -> @starter/db -> @starter/trpc -> @starter/api -> @starter/web
+@app/shared -> @app/db -> @app/trpc -> @app/api -> @app/web
 ```
 
 No circular dependencies allowed.

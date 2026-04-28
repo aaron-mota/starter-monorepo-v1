@@ -1,1 +1,1 @@
-export * from '@starter/shared/schemas/database/user/_config';
+export * from '@app/shared/schemas/database/user/_config';

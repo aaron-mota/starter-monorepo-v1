@@ -7,13 +7,13 @@
       "@/*": [
         "./*"
       ],
-      "@starter/shared": [
+      "@app/shared": [
         "../../packages/shared/schemas/index.ts"
       ],
-      "@starter/shared/*": [
+      "@app/shared/*": [
         "../../packages/shared/*"
       ],
-      "@starter/trpc": [
+      "@app/trpc": [
         "../../packages/trpc/src/index.ts"
       ]
     }

@@ -85,26 +85,26 @@ pnpm dev  # Starts all dev servers
 Update package names across the monorepo:
 
 1. **Root `package.json`** — Change `"name"` field
-2. **Each `packages/*/package.json`** — Change `"name"` from `@starter/*` to `@yourscope/*`
+2. **Each `packages/*/package.json`** — Change `"name"` from `@app/*` to `@yourscope/*`
 3. **Each `apps/*/package.json`** — Change `"name"` and update dependency references
 4. **`turbo.json`** — No changes needed (uses workspace references)
 5. **`pnpm-workspace.yaml`** — No changes needed (glob patterns)
 
 Example renames:
 ```
-@starter/shared  → @myapp/shared
-@starter/db      → @myapp/db
-@starter/trpc    → @myapp/trpc
-@starter/api     → @myapp/api
-@starter/ui      → @myapp/ui
-@starter/web     → @myapp/web
-@starter/mobile  → @myapp/mobile
+@app/shared  → @myapp/shared
+@app/db      → @myapp/db
+@app/trpc    → @myapp/trpc
+@app/api     → @myapp/api
+@app/ui      → @myapp/ui
+@app/web     → @myapp/web
+@app/mobile  → @myapp/mobile
 ```
 
 After renaming, update all imports:
 ```bash
 # Find and replace across the codebase
-grep -r "@starter/" --include="*.ts" --include="*.tsx" --include="*.json" -l
+grep -r "@app/" --include="*.ts" --include="*.tsx" --include="*.json" -l
 ```
 
 ### Step 2: Define Your Entities

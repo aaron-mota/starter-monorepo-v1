@@ -748,7 +748,7 @@
           <p>
             The template ships wired to <strong>Clerk</strong> and <strong>MongoDB</strong>. Both are
             isolated behind clean boundaries — auth in middleware + layouts, database access in
-            <code>@starter/db</code> — so swapping in NextAuth, Supabase, Postgres, etc. is a contained
+            <code>@app/db</code> — so swapping in NextAuth, Supabase, Postgres, etc. is a contained
             change rather than a refactor.
           </p>
         </section>
@@ -777,18 +777,18 @@
           <h2>Dependency graph</h2>
           <p>Strict linear chain — no circular imports allowed. Turborepo enforces build order.</p>
           <div class="dep-graph">
-            <span class="dep-node">@starter/shared</span>
+            <span class="dep-node">@app/shared</span>
             <span class="arrow">→</span>
-            <span class="dep-node">@starter/db</span>
+            <span class="dep-node">@app/db</span>
             <span class="arrow">→</span>
-            <span class="dep-node">@starter/trpc</span>
+            <span class="dep-node">@app/trpc</span>
             <span class="arrow">→</span>
-            <span class="dep-node">@starter/api</span>
+            <span class="dep-node">@app/api</span>
             <br /><br />
             <span style="margin-left: 60ch">↘</span><br />
-            <span style="margin-left: 60ch"><span class="dep-node">@starter/web</span></span><br />
+            <span style="margin-left: 60ch"><span class="dep-node">@app/web</span></span><br />
             <span style="margin-left: 60ch">↗</span><br />
-            <span style="margin-left: 60ch"><span class="dep-node">@starter/mobile</span></span>
+            <span style="margin-left: 60ch"><span class="dep-node">@app/mobile</span></span>
           </div>
 
           <h2>Three-tier schema pattern</h2>
@@ -853,7 +853,7 @@
                 <td><strong>server</strong></td>
                 <td><code>_id: ObjectId</code></td>
                 <td><code>Date</code></td>
-                <td>MongoDB driver in <code>@starter/db</code></td>
+                <td>MongoDB driver in <code>@app/db</code></td>
               </tr>
             </tbody>
           </table>
@@ -868,7 +868,7 @@
             <strong>server/ is firewalled.</strong> Every <code>server/</code> file starts with
             <code>import "server-only"</code>. Entity barrels (<code>_config.ts</code>) only re-export
             from <code>client/</code> and <code>api/</code> — never <code>server/</code> — so a
-            client-side <code>import { TDoc } from '@starter/shared'</code> can never accidentally pull
+            client-side <code>import { TDoc } from '@app/shared'</code> can never accidentally pull
             in BSON code.
           </div>
 
@@ -989,10 +989,10 @@
        │ React Query                  │ Adapter fns
        │ hooks                        │ (DB ⇄ API)
        ▼                              ▼
-@starter/api                   @starter/db
+@app/api                   @app/db
        │                              │
        │  shared types                │  MongoDB
-       └──────────► @starter/shared ──┘  native driver</code></pre>
+       └──────────► @app/shared ──┘  native driver</code></pre>
         </section>
 
         <!-- PACKAGES -->
@@ -1005,7 +1005,7 @@
 
           <div class="grid grid-2">
             <div class="card">
-              <div class="card-meta">@starter/shared</div>
+              <div class="card-meta">@app/shared</div>
               <h3>Schemas, types, constants</h3>
               <p>
                 Single source of truth: Zod schemas for every entity, inferred TypeScript types,
@@ -1018,39 +1018,39 @@
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/db</div>
+              <div class="card-meta">@app/db</div>
               <h3>MongoDB layer</h3>
               <p>
                 Native MongoDB driver (no Mongoose). Typed collection wrappers, index definitions,
                 and a <code>db:indexes</code> setup script. Server-only by construction — every
                 file starts with <code>import "server-only"</code>.
               </p>
-              <p style="margin-top: 8px"><span class="badge">depends on: @starter/shared</span></p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @app/shared</span></p>
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/trpc</div>
+              <div class="card-meta">@app/trpc</div>
               <h3>tRPC routers</h3>
               <p>
                 Routers and a reusable <code>createBaseCrudRouter()</code> that wires standard
                 <code>get</code>, <code>getMany</code>, <code>create</code>, <code>update</code>,
                 <code>delete</code> procedures for any entity from its schemas.
               </p>
-              <p style="margin-top: 8px"><span class="badge">depends on: @starter/db</span></p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @app/db</span></p>
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/api</div>
+              <div class="card-meta">@app/api</div>
               <h3>Client hooks</h3>
               <p>
                 React Query hooks layered on top of tRPC procedures, plus a <code>useBasicCrudProcedure</code>
                 helper that mirrors the server-side base router. Used by both web and mobile.
               </p>
-              <p style="margin-top: 8px"><span class="badge">depends on: @starter/trpc</span></p>
+              <p style="margin-top: 8px"><span class="badge">depends on: @app/trpc</span></p>
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/ui</div>
+              <div class="card-meta">@app/ui</div>
               <h3>Shared UI primitives</h3>
               <p>
                 Intentionally minimal — the web app uses <code>shadcn/ui</code> directly (owned, not
@@ -1061,7 +1061,7 @@
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/web</div>
+              <div class="card-meta">@app/web</div>
               <h3>Next.js 16 app</h3>
               <p>
                 App Router with route groups for marketing, auth, and dashboard. Turbopack dev,
@@ -1072,7 +1072,7 @@
             </div>
 
             <div class="card">
-              <div class="card-meta">@starter/mobile</div>
+              <div class="card-meta">@app/mobile</div>
               <h3>Expo React Native app</h3>
               <p>
                 Expo Router file-based navigation with auth and tabs (dashboard, items, groups,
@@ -1112,7 +1112,7 @@
             <p>
               Stripe Checkout for upgrades, customer portal for self-service plan changes,
               <code>/api/webhook/stripe</code> to sync subscription state to the user record.
-              <code>PLAN_LIMITS</code> constants in <code>@starter/shared/constants/plans</code>
+              <code>PLAN_LIMITS</code> constants in <code>@app/shared/constants/plans</code>
               drive plan-gated features (e.g., the analytics page).
             </p>
             <div class="feature-meta">
@@ -1129,7 +1129,7 @@
             <p>
               Expo Router gives Next.js-style file-based routing for React Native. Auth-gated tabs
               (dashboard, items, groups, analytics, settings) all use the same tRPC backend as web,
-              with shared types from <code>@starter/shared</code>. Pull-to-refresh on every data
+              with shared types from <code>@app/shared</code>. Pull-to-refresh on every data
               screen via <code>useRefresh</code> — calls <code>utils.invalidate()</code> to refetch
               all queries.
             </p>
@@ -1198,7 +1198,7 @@
               Each entity gets a router from <code>createBaseCrudRouter()</code> wired with its
               schemas — exposing <code>get</code>, <code>getMany</code>, <code>create</code>,
               <code>update</code>, <code>delete</code>. The matching <code>useBasicCrudProcedure</code>
-              hook in <code>@starter/api</code> mirrors that on the client. Adding a new entity
+              hook in <code>@app/api</code> mirrors that on the client. Adding a new entity
               = define schemas, mount router, get a typed client.
             </p>
             <div class="feature-meta">
@@ -1285,7 +1285,7 @@
                 <strong>No Mongoose</strong>
                 <p>
                   Native <code>mongodb</code> driver only. Schemas live in
-                  <code>@starter/shared</code>, not in model classes that try to be both validators
+                  <code>@app/shared</code>, not in model classes that try to be both validators
                   and ORMs.
                 </p>
               </div>
@@ -1458,7 +1458,7 @@ npx expo start --go</code></pre>
 
           <h2>Customizing for your project</h2>
           <ol>
-            <li>Rename <code>@starter/*</code> packages to <code>@yourproject/*</code> across all <code>package.json</code> files and imports.</li>
+            <li>Rename <code>@app/*</code> packages to <code>@yourproject/*</code> across all <code>package.json</code> files and imports.</li>
             <li>Update branding (app name, icons, colors in <code>globals.css</code>).</li>
             <li>Replace the example <code>Item</code> entity with your domain entities, following the three-tier schema pattern.</li>
             <li>Add your pages, components, and tRPC routers.</li>
@@ -1540,7 +1540,7 @@ npx expo start --go</code></pre>
               <h3>Vercel deploy</h3>
               <p>
                 Monorepo-aware: <code>buildCommand</code> uses
-                <code>turbo build --filter=@starter/web...</code> so only the web app and its
+                <code>turbo build --filter=@app/web...</code> so only the web app and its
                 deps build. <code>turbo-ignore</code> skips the build entirely for changes
                 that don't affect web.
               </p>
@@ -1570,14 +1570,14 @@ npx expo start --go</code></pre>
             <li><code>git commit</code> → pre-commit hook runs lint-staged + type-check</li>
             <li><code>git push</code> → pre-push hook runs <code>pnpm build</code> (full Next.js production build)</li>
             <li>Vercel webhook fires → <code>turbo-ignore</code> checks if web changed</li>
-            <li>If yes, <code>turbo build --filter=@starter/web...</code> runs with cached deps</li>
+            <li>If yes, <code>turbo build --filter=@app/web...</code> runs with cached deps</li>
             <li>Edge functions, middleware, and static assets ship</li>
           </ol>
 
           <div class="callout">
             <strong>Cache hygiene:</strong> Turborepo's content-addressed cache means a no-op change
-            to <code>@starter/web</code> can replay logs from a hit in milliseconds — but a change to
-            <code>@starter/shared</code> correctly invalidates everything downstream.
+            to <code>@app/web</code> can replay logs from a hit in milliseconds — but a change to
+            <code>@app/shared</code> correctly invalidates everything downstream.
           </div>
         </section>
       </main>

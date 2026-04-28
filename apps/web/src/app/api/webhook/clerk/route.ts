@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@starter/db';
+import { getDb } from '@app/db';
 import { ObjectId } from 'mongodb';
 import { Webhook } from 'svix';
 import type { NextRequest } from 'next/server';
