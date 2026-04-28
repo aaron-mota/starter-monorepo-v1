@@ -564,20 +564,20 @@
       <section class="hero">
         <h1>A production-ready full-stack SaaS starter</h1>
         <p class="lede">
-          A Turborepo monorepo with a Next.js 15 web app, an Expo React Native mobile app, and shared
+          A Turborepo monorepo with a Next.js 16 web app, an Expo React Native mobile app, and shared
           TypeScript packages — auth, billing, dashboard, API layer, and mobile, all wired up with
           opinionated conventions and quality tooling out of the box.
         </p>
         <div class="pill-row">
-          <span class="pill">Next.js 15</span>
+          <span class="pill">Next.js 16</span>
           <span class="pill">React 19</span>
           <span class="pill">React Native (Expo)</span>
-          <span class="pill">TypeScript 5.8</span>
+          <span class="pill">TypeScript 6</span>
           <span class="pill">tRPC</span>
           <span class="pill">MongoDB</span>
           <span class="pill">Clerk</span>
           <span class="pill">Stripe</span>
-          <span class="pill">Zod</span>
+          <span class="pill">Zod 4</span>
           <span class="pill">Turborepo</span>
           <span class="pill">pnpm</span>
         </div>
@@ -616,7 +616,7 @@
             <tbody>
               <tr>
                 <td>Web framework</td>
-                <td><code>Next.js 15</code> (App Router, Turbopack)</td>
+                <td><code>Next.js 16</code> (App Router, Turbopack default)</td>
                 <td>Server components, fast HMR, file-system routing</td>
               </tr>
               <tr>
@@ -645,8 +645,13 @@
                 <td>Free / pro tiers, plan gating, webhook-driven sync</td>
               </tr>
               <tr>
+                <td>Language</td>
+                <td><code>TypeScript 6</code> (strict)</td>
+                <td>Cross-package type safety, modern moduleResolution</td>
+              </tr>
+              <tr>
                 <td>Validation</td>
-                <td>Zod</td>
+                <td><code>Zod 4</code></td>
                 <td>One schema → infer types, validate input, derive API shape</td>
               </tr>
               <tr>
@@ -753,7 +758,7 @@
           <h2>Project structure</h2>
           <pre class="tree"><span class="dir">starter-monorepo-base/</span>
 ├── <span class="dir">apps/</span>
-│   ├── <span class="dir">web/</span>                    <span class="comment"># Next.js 15 web app (App Router)</span>
+│   ├── <span class="dir">web/</span>                    <span class="comment"># Next.js 16 web app (App Router, Turbopack)</span>
 │   └── <span class="dir">mobile/</span>                 <span class="comment"># Expo React Native app</span>
 ├── <span class="dir">packages/</span>
 │   ├── <span class="dir">shared/</span>                 <span class="comment"># Zod schemas, types, constants</span>
@@ -788,55 +793,76 @@
 
           <h2>Three-tier schema pattern</h2>
           <p>
-            Every database entity has three schema flavors that share a single Zod source of truth.
-            Each tier handles a different boundary, with explicit adapters between them.
+            Every database entity lives in <code>packages/shared/schemas/database/&lt;entity-name&gt;/</code>
+            with a strict three-layer split: <code>client/</code> (what React components use),
+            <code>api/</code> (what crosses the network as JSON), and <code>server/</code> (what
+            MongoDB stores). Each layer has its own Zod schemas, inferred TypeScript types, and
+            adapter functions that bridge to the next. There's no ORM in the way — the schemas in
+            <code>server/schema.ts</code> <em>are</em> the model, and queries hit the official
+            MongoDB driver directly.
           </p>
 
+          <pre class="tree"><span class="dir">packages/shared/schemas/database/user/</span>
+├── _config.ts              <span class="comment"># Root TYPE + barrel exports (client + api only)</span>
+├── <span class="dir">client/</span>                 <span class="comment"># FE — what React components consume</span>
+│   ├── _config.ts          <span class="comment"># SCHEMA, SCHEMA_CREATE, SCHEMA_UPDATE</span>
+│   ├── schema.ts           <span class="comment"># schema, schemaCreate, schemaUpdate (Zod)</span>
+│   ├── types.ts            <span class="comment"># TDoc, TDocCreate, TDocUpdate</span>
+│   └── constants.ts        <span class="comment"># DEFAULT_VALUES, KEYS_*</span>
+├── <span class="dir">api/</span>                    <span class="comment"># wire format — what JSON over the network looks like</span>
+│   ├── _config.ts
+│   ├── schema.ts           <span class="comment"># schemaApi, schemaApiCreate, schemaApiUpdate</span>
+│   ├── types.ts            <span class="comment"># TDocApi, TDocApiCreate, TDocApiUpdate</span>
+│   └── adapterFns.ts       <span class="comment"># adapterFnApiToFE, adapterFnFEToApiCreate, ...</span>
+└── <span class="dir">server/</span>                 <span class="comment"># DB — what gets stored in MongoDB (server-only)</span>
+    ├── _config.ts          <span class="comment"># import "server-only"; — guards the boundary</span>
+    ├── schema.ts           <span class="comment"># schemaDb, schemaDbCreate, schemaDbUpdate</span>
+    ├── types.ts            <span class="comment"># TDocDb, TDocDbCreate, TDocDbUpdate</span>
+    └── adapterFns.ts       <span class="comment"># adapterFnDbToFE, adapterFnFEToDbCreate, ...</span></pre>
+
+          <h3>Why three layers?</h3>
+          <p>
+            The boundaries between FE / wire / DB don't carry the same types. <code>ObjectId</code>
+            can't serialize to JSON; <code>Date</code> objects come back from the network as ISO
+            strings; the FE wants <code>id: string</code> and real <code>Date</code> instances.
+            Each adapter does exactly one of those translations, in one place, at one boundary:
+          </p>
           <table>
             <thead>
               <tr>
-                <th>Tier</th>
-                <th>Folder</th>
+                <th>Layer</th>
+                <th>Shape of <code>id</code></th>
+                <th>Shape of dates</th>
                 <th>Used by</th>
-                <th>Example types</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Client</strong></td>
-                <td><code>client/</code></td>
-                <td>Frontend code, forms, validation</td>
-                <td><code>TDoc</code>, <code>TDocCreate</code>, <code>TDocUpdate</code></td>
+                <td><strong>client</strong></td>
+                <td><code>id: string</code></td>
+                <td><code>Date</code></td>
+                <td>React components (web + mobile), forms, hooks</td>
               </tr>
               <tr>
-                <td><strong>API</strong></td>
-                <td><code>api/</code></td>
-                <td>Wire format between client &amp; server</td>
-                <td><code>TDocApi</code>, <code>TDocApiCreate</code>, <code>TDocApiUpdate</code></td>
+                <td><strong>api</strong></td>
+                <td><code>_id: string</code></td>
+                <td>ISO strings</td>
+                <td>JSON in flight (REST endpoints, webhook payloads)</td>
               </tr>
               <tr>
-                <td><strong>Server</strong></td>
-                <td><code>server/</code></td>
-                <td>MongoDB documents (BSON, ObjectId)</td>
-                <td><code>TDocDb</code>, <code>TDocDbCreate</code>, <code>TDocDbUpdate</code></td>
+                <td><strong>server</strong></td>
+                <td><code>_id: ObjectId</code></td>
+                <td><code>Date</code></td>
+                <td>MongoDB driver in <code>@starter/db</code></td>
               </tr>
             </tbody>
           </table>
-
-          <pre class="tree"><span class="dir">packages/shared/schemas/database/[entity]/</span>
-├── _config.ts           <span class="comment"># Root TYPE + SCHEMA exports</span>
-├── <span class="dir">client/</span>
-│   ├── schema.ts        <span class="comment"># Zod schemas (form-friendly)</span>
-│   ├── types.ts         <span class="comment"># Inferred TS types</span>
-│   └── constants.ts     <span class="comment"># DEFAULT_VALUES, KEYS_*</span>
-├── <span class="dir">api/</span>
-│   ├── schema.ts        <span class="comment"># API wire schemas</span>
-│   ├── types.ts         <span class="comment"># API types</span>
-│   └── adapterFns.ts    <span class="comment"># API ⇄ Client transforms</span>
-└── <span class="dir">server/</span>
-    ├── schema.ts        <span class="comment"># DB schemas (ObjectId, Date)</span>
-    ├── types.ts         <span class="comment"># DB types</span>
-    └── adapterFns.ts    <span class="comment"># DB ⇄ Client transforms</span></pre>
+          <p>
+            A typical read flows <strong>DB → wire → FE</strong> via <code>adapterFnDbToFE</code> on
+            the server, then JSON serialization across the network produces the api shape, then
+            <code>adapterFnApiToFE</code> rehydrates it on the client (string <code>_id</code> →
+            <code>id</code>, ISO strings → <code>Date</code>). A write reverses it.
+          </p>
 
           <div class="callout">
             <strong>server/ is firewalled.</strong> Every <code>server/</code> file starts with
@@ -845,6 +871,114 @@
             client-side <code>import { TDoc } from '@starter/shared'</code> can never accidentally pull
             in BSON code.
           </div>
+
+          <div class="callout">
+            <strong>Note: tRPC hides the wire layer for you.</strong>
+            tRPC is configured with the <code>superjson</code> transformer (in
+            <code>packages/trpc/src/trpc-server.ts</code>), which serializes &amp; deserializes
+            <code>Date</code> (plus <code>BigInt</code>, <code>Map</code>, <code>Set</code>, etc.)
+            transparently across the network. For an end-to-end tRPC call, the client receives
+            <em>real</em> <code>Date</code> instances back — no ISO-string detour, no manual
+            rehydration. As long as <code>id</code> is a pre-stringified ObjectId, the
+            <code>client/</code> + <code>server/</code> split alone is sufficient.
+            <br /><br />
+            The <code>api/</code> layer becomes load-bearing the moment you leave that bubble:
+            <ul style="margin: 6px 0 0 0;">
+              <li>exposing public REST endpoints under <code>apps/web/src/app/api/</code></li>
+              <li>receiving webhooks (Stripe, Resend, Clerk) where the payload is plain JSON</li>
+              <li>integrating with external APIs whose responses follow their own wire format</li>
+              <li>any code path where the network carries plain JSON instead of superjson-encoded JSON</li>
+            </ul>
+            In those cases <code>Date</code> ↔ ISO string and <code>ObjectId</code> ↔ string have
+            to be handled explicitly. The <code>api/</code> folder makes that boundary type-safe and
+            one-place-to-fix instead of letting it leak into every fetch call.
+          </div>
+
+          <div class="callout">
+            <strong>Adapters are also where you reshape data, not just convert types.</strong>
+            Each adapter is a normal function with full freedom to transform what passes through.
+            That makes the DB shape and the FE shape <em>independent</em> on purpose — you can
+            decide what the FE sees without dragging storage decisions along with it. Things you
+            can do at this boundary:
+            <ul style="margin: 6px 0 0 0;">
+              <li><strong>Rename fields</strong> — canonical camelCase on the FE even if the DB
+                column is <code>created_by_id</code>; or rename a clumsy DB-side name to something
+                more readable</li>
+              <li><strong>Exclude fields</strong> — drop sensitive data (password hashes, internal
+                IDs), denormalized cache columns, or anything the UI never needs</li>
+              <li><strong>Add computed fields</strong> — surface a derived <code>fullName</code>
+                built from <code>firstName</code> + <code>lastName</code>, an <code>isOverdue</code>
+                flag from a date, a relative <code>age</code>, etc.</li>
+              <li><strong>Combine flat columns into structured objects</strong> — turn
+                <code>address1</code>, <code>address2</code>, <code>city</code>, <code>state</code>,
+                <code>zip</code> into a nested <code>address</code> object on the FE</li>
+              <li><strong>Coerce formats</strong> — <code>priceInCents: 1299</code> in DB →
+                <code>price: 12.99</code> on the FE; ISO date strings → <code>Date</code>
+                instances; etc.</li>
+            </ul>
+            The user-model adapter
+            (<code>packages/shared/schemas/database/user/server/adapterFns.ts</code>) is a small
+            real example: it strips <code>_id</code> from the DB shape and produces
+            <code>id: string</code> on the FE, so the FE never has to know about MongoDB's
+            <code>ObjectId</code> at all.
+          </div>
+
+          <div class="callout">
+            <strong>FYI: the same boundaries make swapping the database tractable.</strong>
+            Because the FE only ever sees <code>client/</code> types (<code>TDoc</code> with
+            <code>id: string</code> and real <code>Date</code> instances), it doesn't know or care
+            what's storing the data underneath. There's no ORM in the way either — the Zod schemas
+            in <code>server/schema.ts</code> <em>are</em> the model. Migrating from MongoDB to
+            Postgres (Drizzle, Prisma, etc.) is mostly a <code>server/</code>-folder job per entity:
+            <ul style="margin: 6px 0 0 0;">
+              <li>update <code>server/schema.ts</code> &amp; <code>server/types.ts</code> to
+                describe the new row shape (e.g. <code>id: serial</code> instead of an
+                <code>ObjectId</code>-shaped string)</li>
+              <li>rewrite <code>server/adapterFns.ts</code> to map the new DB shape back to
+                <code>TDoc</code></li>
+            </ul>
+            <code>client/</code> and <code>api/</code> stay untouched, components stay untouched,
+            forms stay untouched.
+            <br /><br />
+            <em>Caveats, to be honest:</em> the cross-cutting pieces would still need work — the
+            connection layer in <code>packages/db/src/</code>, the tRPC context that resolves the
+            current user via Mongo, the generic base-router helpers that take raw Mongo queries
+            (<code>getManyMongo</code>, <code>getSingleMongo</code>) would need an equivalent for
+            the new engine, and Mongo-only deps would come out of <code>package.json</code>. But
+            the <em>per-entity</em> migration is contained, and the FE doesn't flinch.
+          </div>
+
+          <h3>Naming conventions</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Schemas</th>
+                <th>Types</th>
+                <th>Adapters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>client</strong></td>
+                <td><code>schema</code>, <code>schemaCreate</code>, <code>schemaUpdate</code></td>
+                <td><code>TDoc</code>, <code>TDocCreate</code>, <code>TDocUpdate</code></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><strong>api</strong></td>
+                <td><code>schemaApi</code>, <code>schemaApiCreate</code>, <code>schemaApiUpdate</code></td>
+                <td><code>TDocApi</code>, <code>TDocApiCreate</code>, <code>TDocApiUpdate</code></td>
+                <td><code>adapterFnApiToFE</code>, <code>adapterFnFEToApiCreate</code>, <code>adapterFnFEToApiUpdate</code></td>
+              </tr>
+              <tr>
+                <td><strong>server</strong></td>
+                <td><code>schemaDb</code>, <code>schemaDbCreate</code>, <code>schemaDbUpdate</code></td>
+                <td><code>TDocDb</code>, <code>TDocDbCreate</code>, <code>TDocDbUpdate</code></td>
+                <td><code>adapterFnDbToFE</code>, <code>adapterFnFEToDbCreate</code>, <code>adapterFnFEToDbUpdate</code>, <code>adapterFnFEToDbPartial</code></td>
+              </tr>
+            </tbody>
+          </table>
 
           <h2>Data flow</h2>
           <pre><code>┌─────────────┐     tRPC      ┌─────────────┐
@@ -928,7 +1062,7 @@
 
             <div class="card">
               <div class="card-meta">@starter/web</div>
-              <h3>Next.js 15 app</h3>
+              <h3>Next.js 16 app</h3>
               <p>
                 App Router with route groups for marketing, auth, and dashboard. Turbopack dev,
                 tRPC API route, Stripe + Clerk webhooks, weekly-digest cron, push subscription
@@ -1350,7 +1484,7 @@ npx expo start --go</code></pre>
 
             <div class="card">
               <div class="card-meta">tsconfig.base.json</div>
-              <h3>TypeScript 5.8 (strict)</h3>
+              <h3>TypeScript 6.0 (strict)</h3>
               <p>
                 Strict mode on. Modern JSX transform (<code>react-jsx</code>). Each package
                 extends the base config and overrides only what it needs (e.g., mobile uses
