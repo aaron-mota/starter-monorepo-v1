@@ -34,7 +34,7 @@
 
 This is a **full-stack monorepo** for building web + mobile applications with a shared backend. It provides:
 
-- A **Next.js 15** web application with App Router
+- A **Next.js 16** web application with App Router
 - An **Expo React Native** mobile application with Expo Router
 - A **type-safe API layer** using tRPC with automatic CRUD generation
 - A **three-tier schema system** (client/api/server) powered by Zod
@@ -52,13 +52,13 @@ The architecture eliminates boilerplate: adding a new database entity automatica
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
 | **Monorepo** | Turborepo + pnpm | 2.5 / 9.15 | Build orchestration & workspaces |
-| **Web Framework** | Next.js (App Router) | 15.3 | SSR/RSC web application |
+| **Web Framework** | Next.js (App Router, Turbopack) | 16.2 | SSR/RSC web application |
 | **Mobile Framework** | Expo + React Native | SDK 54 / 0.81 | Native iOS/Android app |
-| **Language** | TypeScript | 5.8 | End-to-end type safety |
+| **Language** | TypeScript | 6.0 | End-to-end type safety |
 | **Database** | MongoDB (native driver) | 7.1 | Document storage |
 | **API Layer** | tRPC | 11.10 | End-to-end type-safe RPC |
 | **Server State** | TanStack React Query | 5.80 | Client-side caching & mutations |
-| **Validation** | Zod | 3.23 | Single source of truth for types |
+| **Validation** | Zod | 4.x | Single source of truth for types |
 | **Web UI** | shadcn/ui + Tailwind CSS v4 | — | Component library + utility CSS |
 | **Mobile UI** | NativeWind + shadcn-style | 4.1 | Tailwind CSS for React Native |
 | **Auth** | Clerk | 6.38 (web) / 2.11 (mobile) | Authentication & user management |
@@ -81,7 +81,7 @@ The architecture eliminates boilerplate: adding a new database entity automatica
 ```
 starter-monorepo/
 ├── apps/
-│   ├── web/                        # Next.js 15 web application
+│   ├── web/                        # Next.js 16 web application
 │   │   ├── src/
 │   │   │   ├── app/                # App Router (pages, layouts, API routes)
 │   │   │   ├── components/         # React components (ui/, layout/, shared/, etc.)

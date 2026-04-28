@@ -4,7 +4,7 @@ A full-stack monorepo starter template with a Next.js web app, React Native mobi
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Database**: MongoDB (native driver, no Mongoose)
 - **State**: TanStack React Query (server state), nuqs (URL state)
 - **UI**: shadcn/ui components, Tailwind CSS, Recharts
@@ -35,7 +35,7 @@ pnpm db:setup     # Create indexes (run after DB wipe)
 | `packages/trpc` | `@app/trpc` | tRPC routers and base CRUD procedures |
 | `packages/api` | `@app/api` | REST API client layer with React Query hooks |
 | `packages/ui` | `@app/ui` | Shared UI components |
-| `apps/web` | `@app/web` | Next.js 15 web application |
+| `apps/web` | `@app/web` | Next.js 16 web application |
 
 ## Key Conventions
 

@@ -37,7 +37,7 @@ Developers who want to rapidly build and ship full-stack applications with:
 |---------|---------------|-------|
 | Package manager | pnpm 9.15 with workspaces | Hoisted node_modules |
 | Build system | Turborepo 2.5 | Smart caching, dependency-aware builds |
-| TypeScript | 5.8 (strict) | Shared base tsconfig |
+| TypeScript | 6.0 (strict) | Shared base tsconfig |
 | Linting | ESLint 9 (flat config) | TypeScript-aware, React plugin |
 | Formatting | Prettier 3.8 | Tailwind + import sorting plugins |
 | Git hooks | Husky + lint-staged | Pre-commit: lint + format + type-check |
@@ -84,11 +84,11 @@ Developers who want to rapidly build and ship full-stack applications with:
 - Reserved for cross-platform shared components
 - Currently empty, ready for buildout
 
-### 3.3 Web Application (Next.js 15)
+### 3.3 Web Application (Next.js 16)
 
 | Feature | Implementation |
 |---------|---------------|
-| Framework | Next.js 15 with App Router + Turbopack |
+| Framework | Next.js 16 with App Router + Turbopack |
 | Styling | Tailwind CSS v4 with OKLCH design tokens |
 | Components | shadcn/ui (new-york style, 20 components) |
 | Auth | Clerk with middleware-based route protection |

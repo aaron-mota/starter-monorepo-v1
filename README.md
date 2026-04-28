@@ -6,7 +6,7 @@ A production-ready full-stack monorepo template with a Next.js web app, React Na
 
 | Layer | Technology |
 |-------|-----------|
-| **Web Framework** | Next.js 15 (App Router, Turbopack) |
+| **Web Framework** | Next.js 16 (App Router, Turbopack) |
 | **Mobile Framework** | React Native (Expo) |
 | **Database** | MongoDB (native driver, no Mongoose) |
 | **API Layer** | tRPC with reusable base CRUD procedures |
@@ -45,7 +45,7 @@ If you'd prefer a different auth provider (e.g., NextAuth, Supabase Auth, Fireba
 ```
 starter-monorepo-base/
 ├── apps/
-│   ├── web/                    # Next.js 15 web application
+│   ├── web/                    # Next.js 16 web application
 │   └── mobile/                 # React Native (Expo) mobile app
 ├── packages/
 │   ├── shared/                 # Zod schemas, types, constants
@@ -69,7 +69,7 @@ starter-monorepo-base/
 | `packages/trpc` | `@app/trpc` | tRPC routers with reusable base CRUD procedures |
 | `packages/api` | `@app/api` | REST API client layer with React Query hooks |
 | `packages/ui` | `@app/ui` | Shared UI components |
-| `apps/web` | `@app/web` | Next.js 15 web application |
+| `apps/web` | `@app/web` | Next.js 16 web application |
 | `apps/mobile` | `@app/mobile` | React Native (Expo) mobile application |
 
 ### Dependency Graph
