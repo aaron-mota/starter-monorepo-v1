@@ -43,7 +43,7 @@ If you'd prefer a different auth provider (e.g., NextAuth, Supabase Auth, Fireba
 ## Project Structure
 
 ```
-starter-monorepo-base/
+starter-monorepo-v1/
 ├── apps/
 │   ├── web/                    # Next.js 16 web application
 │   └── mobile/                 # React Native (Expo) mobile app
