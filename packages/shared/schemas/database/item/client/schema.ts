@@ -20,4 +20,4 @@ export const schemaCreate = schema.pick({
   ownerId: true,
 });
 
-export const schemaUpdate = schemaCreate.extend({}).partial();
+export const schemaUpdate = schemaCreate.partial();

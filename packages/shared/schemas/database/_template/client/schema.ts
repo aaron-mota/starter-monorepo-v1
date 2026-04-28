@@ -16,4 +16,4 @@ export const schemaCreate = schema.pick({
   userId: true,
 });
 
-export const schemaUpdate = schemaCreate.extend({}).partial();
+export const schemaUpdate = schemaCreate.partial();

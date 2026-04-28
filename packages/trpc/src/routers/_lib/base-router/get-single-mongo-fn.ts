@@ -36,5 +36,5 @@ export const getSingleMongoFn = async function getSingleMongoFn<
     });
   }
 
-  return adapterFnDbToFE(docDb);
+  return adapterFnDbToFE(docDb as z.infer<TDb>);
 };

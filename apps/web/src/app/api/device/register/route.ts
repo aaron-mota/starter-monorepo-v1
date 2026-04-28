@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { NextRequest } from 'next/server';
 
 const bodySchema = z.object({
-  deviceId: z.string().uuid(),
+  deviceId: z.guid(),
 });
 
 export async function POST(req: NextRequest) {

@@ -8,7 +8,7 @@ import type { Id, Resource } from '../../../types';
 interface UpdateManyParams<TDoc, TDocApi, TDocUpdate, TDocApiUpdate> {
   resource: string;
   parentResources?: Resource[];
-  schema?: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+  schema?: z.ZodType<TDoc>;
   baseUrl: string;
   adapterFnApiToFE?: (data: TDocApi) => TDoc;
   adapterFnFEToApiUpdate?: (data: TDocUpdate) => TDocApiUpdate;

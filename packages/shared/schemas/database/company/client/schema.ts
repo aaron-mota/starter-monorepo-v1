@@ -11,4 +11,4 @@ export const schema = z.object({
 
 export const schemaCreate = schema.pick({ name: true });
 
-export const schemaUpdate = schemaCreate.extend({}).partial();
+export const schemaUpdate = schemaCreate.partial();

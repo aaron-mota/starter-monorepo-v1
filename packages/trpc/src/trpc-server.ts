@@ -5,7 +5,7 @@ import { auth } from '@clerk/nextjs/server';
 import { connectToDatabase } from '@starter/db';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 import type { NextRequest } from 'next/server';
 
 export const createContext = async (req: NextRequest) => {
@@ -47,7 +47,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+        zodError: error.cause instanceof ZodError ? z.treeifyError(error.cause) : null,
       },
     };
   },

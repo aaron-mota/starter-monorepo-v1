@@ -22,4 +22,4 @@ export const schemaCreate = schema.pick({
   stripeSubscriptionId: true,
 });
 
-export const schemaUpdate = schemaCreate.omit({ companyId: true }).extend({}).partial();
+export const schemaUpdate = schemaCreate.omit({ companyId: true }).partial();

@@ -20,5 +20,5 @@ export const getAllFn = async function getAllFn<
     throw new TRPCError({ code: 'NOT_FOUND', message: `No ${routerName} found` });
   }
 
-  return docsDb.map(adapterFnDbToFE);
+  return docsDb.map((doc) => adapterFnDbToFE(doc as z.infer<TDb>));
 };

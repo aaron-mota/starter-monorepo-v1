@@ -22,7 +22,7 @@
     "mongodb": "^7.1.0",
     "server-only": "^0.0.1",
     "superjson": "^2.2.6",
-    "zod": "^3.23.8"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.19.30",

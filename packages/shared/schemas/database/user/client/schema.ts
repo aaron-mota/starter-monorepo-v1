@@ -15,7 +15,7 @@ export const schema = z.object({
   ...schemaDatabaseObject.shape,
   first: z.string().max(255).optional(),
   last: z.string().max(255).optional(),
-  email: z.string().email(),
+  email: z.email(),
   name: z.string().optional(),
   plan: z.enum(['free', 'pro']).default('free'),
   isAdmin: z.boolean().default(false),
@@ -39,4 +39,4 @@ export const schemaCreate = schema.pick({
   familyId: true,
 });
 
-export const schemaUpdate = schemaCreate.omit({ clerkId: true }).extend({}).partial();
+export const schemaUpdate = schemaCreate.omit({ clerkId: true }).partial();

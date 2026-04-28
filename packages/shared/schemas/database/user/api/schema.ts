@@ -10,6 +10,6 @@ export const schemaApi = schema.omit({ id: true }).extend({
   onboardingCompletedAt: z.string().nullable(),
 });
 
-export const schemaApiCreate = schemaCreate.omit({}).extend({});
+export const schemaApiCreate = schemaCreate.omit({});
 
-export const schemaApiUpdate = schemaUpdate.extend({}).partial();
+export const schemaApiUpdate = schemaUpdate.partial();

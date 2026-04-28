@@ -20,5 +20,5 @@ export const getLatestFn = async function getLatestFn<
     throw new TRPCError({ code: 'NOT_FOUND', message: `${routerName} not found` });
   }
 
-  return adapterFnDbToFE(docDb);
+  return adapterFnDbToFE(docDb as z.infer<TDb>);
 };

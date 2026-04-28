@@ -15,7 +15,7 @@ export function getMany<TDoc, TDocApi, TQuery extends QueryConfig>(
   params: ParamsGetMany<TQuery> & {
     resource: string;
     adapterFnApiToFE?: (data: TDocApi) => TDoc;
-    schema?: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+    schema?: z.ZodType<TDoc>;
     baseUrl?: string;
     limitParamKey?: string;
     config?: ConfigBasicCrudProcedure;

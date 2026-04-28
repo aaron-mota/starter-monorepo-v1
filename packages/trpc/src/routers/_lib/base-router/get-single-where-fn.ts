@@ -36,5 +36,5 @@ export const getSingleWhereFn = async function getSingleWhereFn<
     throw new TRPCError({ code: 'NOT_FOUND', message: `${routerName} not found` });
   }
 
-  return adapterFnDbToFE(docDb);
+  return adapterFnDbToFE(docDb as z.infer<TDb>);
 };

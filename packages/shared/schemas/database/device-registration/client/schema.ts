@@ -10,7 +10,7 @@ export const schemaRelationshipFields = z.object({
 
 export const schema = z.object({
   ...schemaDatabaseObject.shape,
-  deviceId: z.string().uuid(),
+  deviceId: z.guid(),
   deviceName: z.string().max(60).optional(),
   platform: devicePlatformEnum.optional(),
   nativeDeviceId: z.string().max(255).optional(),

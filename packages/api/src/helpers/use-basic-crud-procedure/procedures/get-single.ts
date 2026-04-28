@@ -15,7 +15,7 @@ export type ParamsGetSingle<TQueryParams> = {
 export function getSingle<TDoc, TDocApi, TQuery extends QueryConfig>(
   params: ParamsGetSingle<TQuery> & {
     resource: string;
-    schema?: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+    schema?: z.ZodType<TDoc>;
     baseUrl?: string;
     adapterFnApiToFE?: (data: TDocApi) => TDoc;
     queryKeyBase?: string;

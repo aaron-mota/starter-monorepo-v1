@@ -169,7 +169,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as Partial<z.infer<T>>,
         });
       }),
 
@@ -199,7 +199,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as Partial<z.infer<T>> | undefined,
         });
       }),
 
@@ -211,7 +211,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as Partial<z.infer<T>> | undefined,
         });
       }),
 
@@ -223,7 +223,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as Partial<z.infer<T>> | undefined,
         });
       }),
 
@@ -235,7 +235,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as Partial<z.infer<T>> | undefined,
         });
       }),
 
@@ -353,7 +353,7 @@ export const createBaseRouter = <
           config: { routerName, collectionName },
           schemas,
           adapterFns,
-          input,
+          input: input as { ids: string[]; data: Partial<z.infer<U>> },
         });
       }),
 

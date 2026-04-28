@@ -29,7 +29,7 @@ export const updateFn = async function updateFn<
 
   const { id, ...updateData } = input;
 
-  const payloadDb: TDocDbUpdate<UDb> = adapterFnToDbUpdate(updateData);
+  const payloadDb: TDocDbUpdate<UDb> = adapterFnToDbUpdate(updateData as z.infer<U>);
 
   const docDb = await db.collection(collectionName).findOneAndUpdate(
     { _id: adapterFnIdFEToDbServer(id) },
@@ -49,5 +49,5 @@ export const updateFn = async function updateFn<
     });
   }
 
-  return adapterFnDbToFE(docDb);
+  return adapterFnDbToFE(docDb as z.infer<TDb>);
 };

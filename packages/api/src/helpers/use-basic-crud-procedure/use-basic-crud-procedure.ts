@@ -34,7 +34,7 @@ interface Args<
   TQueryGetSingle = QueryConfig<TDocApi, TDocApi>,
 > {
   resource: string;
-  schema: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+  schema: z.ZodType<TDoc>;
   adapterFnApiToFE: (data: TDocApi) => TDoc;
   adapterFnFEToApiCreate?: (data: TDocCreate) => TDocApiCreate;
   adapterFnFEToApiUpdate?: (data: TDocUpdate) => TDocApiUpdate;

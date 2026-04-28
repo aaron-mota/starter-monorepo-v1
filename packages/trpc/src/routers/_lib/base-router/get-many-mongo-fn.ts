@@ -88,5 +88,5 @@ export const getManyMongoFn = async function getManyMongoFn<
     });
   }
 
-  return docsDb.map(adapterFnDbToFE);
+  return docsDb.map((doc) => adapterFnDbToFE(doc as z.infer<TDb>));
 };

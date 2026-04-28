@@ -9,7 +9,7 @@ export const createMongoQuerySchema = <T extends ZodObject<ZodRawShape>>(baseSch
         key,
         z.union([
           zodType,
-          createMongoOperatorSchema(zodType),
+          createMongoOperatorSchema(zodType as z.ZodTypeAny),
           ...(zodType instanceof z.ZodString ? [z.instanceof(RegExp)] : []),
         ]),
       ];

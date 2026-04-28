@@ -38,7 +38,7 @@ export const updateManyFn = async function updateManyFn<
   }
 
   const objectIds = input.ids.map(adapterFnIdFEToDbServer);
-  const payloadDb: TDocDbUpdate<UDb> = adapterFnToDbUpdate(input.data);
+  const payloadDb: TDocDbUpdate<UDb> = adapterFnToDbUpdate(input.data as z.infer<U>);
 
   const result = await db.collection(collectionName).updateMany(
     { _id: { $in: objectIds } },

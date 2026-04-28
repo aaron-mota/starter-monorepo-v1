@@ -14,7 +14,7 @@ export type ParamsGetSingleWhere<TQueryParams> = {
 export function getSingleWhere<TDoc, TDocApi, TQuery extends QueryConfig>(
   params: ParamsGetSingleWhere<TQuery> & {
     resource: string;
-    schema?: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+    schema?: z.ZodType<TDoc>;
     baseUrl?: string;
     adapterFnApiToFE?: (data: TDocApi) => TDoc;
     limitParamKey?: string;

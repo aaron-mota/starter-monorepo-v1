@@ -45,10 +45,10 @@ export const createFn = async function createFn<
     });
   }
 
-  const doc: TDoc<T> = {
+  const doc = {
     id: adapterFnIdDbToFEServer(result.insertedId),
     ...docToInsert,
-  };
+  } as unknown as TDoc<T>;
 
   return doc;
 };

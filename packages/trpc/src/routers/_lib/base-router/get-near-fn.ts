@@ -54,5 +54,5 @@ export const getNearFn = async function getNearFn<
     });
   }
 
-  return docsDb.map(adapterFnDbToFE);
+  return docsDb.map((doc) => adapterFnDbToFE(doc as z.infer<TDb>));
 };

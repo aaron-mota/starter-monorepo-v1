@@ -9,7 +9,7 @@ import type { QueryConfig, Resource } from '../../../types';
 interface CreateManyParams<TDoc, TDocApi, TDocCreate, TDocApiCreate, TQuery extends QueryConfig> {
   resource: string;
   parentResources?: Resource[];
-  schema?: z.ZodType<TDoc, z.ZodTypeDef, unknown>;
+  schema?: z.ZodType<TDoc>;
   baseUrl: string;
   adapterFnApiToFE?: (data: TDocApi) => TDoc;
   adapterFnFEToApiCreate?: (data: TDocCreate) => TDocApiCreate;

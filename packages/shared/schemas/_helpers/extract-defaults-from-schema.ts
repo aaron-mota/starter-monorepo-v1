@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { ZodRawShape, ZodTypeAny } from 'zod';
 
 export const BASE_DEFAULTS = {
   STRING: '',
@@ -12,60 +11,38 @@ export const BASE_DEFAULTS = {
   UNDEFINED: undefined,
 };
 
-type ExtractedDefaults<T> = {
-  [P in keyof T]?: T[P] extends ZodTypeAny ? ReturnType<T[P]['parse']> : never;
-};
-
-export function extractDefaultsFromSchema<TSchema extends ZodRawShape>(
+export function extractDefaultsFromSchema<TSchema extends z.ZodRawShape>(
   schema: z.ZodObject<TSchema>
-): ExtractedDefaults<TSchema> {
+): Partial<z.infer<z.ZodObject<TSchema>>> {
   const schemaShape = schema.shape;
-  const result = {} as ExtractedDefaults<TSchema>;
+  const result: Record<string, unknown> = {};
 
   for (const key in schemaShape) {
     const fieldSchema = schemaShape[key];
-    result[key as keyof TSchema] = extractValueFromSchema(fieldSchema!) as ExtractedDefaults<TSchema>[keyof TSchema];
+    if (fieldSchema) {
+      result[key] = extractValueFromSchema(fieldSchema as unknown as z.ZodTypeAny);
+    }
   }
 
-  return result;
+  return result as Partial<z.infer<z.ZodObject<TSchema>>>;
 }
 
-function extractValueFromSchema<T extends ZodTypeAny>(fieldSchema: T): unknown {
+function extractValueFromSchema(fieldSchema: z.ZodTypeAny): unknown {
   if (fieldSchema instanceof z.ZodDefault) {
-    return (fieldSchema._def as { defaultValue: () => unknown }).defaultValue() as ReturnType<T['parse']>;
-  } else if (fieldSchema instanceof z.ZodObject) {
+    return fieldSchema.parse(undefined);
+  }
+  if (fieldSchema instanceof z.ZodObject) {
     return extractDefaultsFromSchema(fieldSchema);
-  } else if (fieldSchema instanceof z.ZodArray) {
+  }
+  if (fieldSchema instanceof z.ZodArray) {
     return BASE_DEFAULTS.ARRAY.slice();
-  } else {
-    return handleBaseTypes(fieldSchema);
   }
-}
-
-function handleBaseTypes<T extends ZodTypeAny>(fieldSchema: T): unknown {
-  switch (fieldSchema.constructor) {
-    case z.ZodString:
-      return BASE_DEFAULTS.STRING;
-    case z.ZodDate:
-      return BASE_DEFAULTS.DATE;
-    case z.ZodNumber:
-      return BASE_DEFAULTS.NUMBER;
-    case z.ZodBoolean:
-      return BASE_DEFAULTS.BOOLEAN;
-    case z.ZodNull:
-      return BASE_DEFAULTS.NULL;
-    case z.ZodNullable:
-      return BASE_DEFAULTS.NULL;
-    case z.ZodOptional:
-      return BASE_DEFAULTS.UNDEFINED;
-    default:
-      return handleTransformedTypes(fieldSchema);
-  }
-}
-
-function handleTransformedTypes<T extends ZodTypeAny>(fieldSchema: T): unknown {
-  if (fieldSchema instanceof z.ZodTransformer && (fieldSchema._def as { innerType: ZodTypeAny }).innerType) {
-    return extractValueFromSchema((fieldSchema._def as { innerType: ZodTypeAny }).innerType);
-  }
+  if (fieldSchema instanceof z.ZodOptional) return BASE_DEFAULTS.UNDEFINED;
+  if (fieldSchema instanceof z.ZodNullable) return BASE_DEFAULTS.NULL;
+  if (fieldSchema instanceof z.ZodNull) return BASE_DEFAULTS.NULL;
+  if (fieldSchema instanceof z.ZodString) return BASE_DEFAULTS.STRING;
+  if (fieldSchema instanceof z.ZodNumber) return BASE_DEFAULTS.NUMBER;
+  if (fieldSchema instanceof z.ZodBoolean) return BASE_DEFAULTS.BOOLEAN;
+  if (fieldSchema instanceof z.ZodDate) return BASE_DEFAULTS.DATE;
   return BASE_DEFAULTS.UNDEFINED;
 }
