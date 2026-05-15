@@ -86,6 +86,35 @@ interface Args<
   };
 }
 
+function removeQueryDefaults(schema: z.ZodTypeAny): z.ZodTypeAny {
+  if (schema instanceof z.ZodDefault || schema instanceof z.ZodCatch) {
+    return removeQueryDefaults(schema.unwrap() as z.ZodTypeAny);
+  }
+  if (schema instanceof z.ZodOptional) {
+    return removeQueryDefaults(schema.unwrap() as z.ZodTypeAny).optional();
+  }
+  if (schema instanceof z.ZodNullable) {
+    return removeQueryDefaults(schema.unwrap() as z.ZodTypeAny).nullable();
+  }
+  if (schema instanceof z.ZodArray) {
+    return z.array(removeQueryDefaults(schema.element as z.ZodTypeAny));
+  }
+  if (schema instanceof z.ZodObject) {
+    const shape = Object.fromEntries(
+      Object.entries(schema.shape).map(([key, value]) => [key, removeQueryDefaults(value as z.ZodTypeAny)])
+    );
+    return z.object(shape);
+  }
+  return schema;
+}
+
+function createPartialQueryInputSchema<T extends ZodObject<ZodRawShape>>(schema: T): z.ZodType<Partial<z.infer<T>>> {
+  const shape = Object.fromEntries(
+    Object.entries(schema.shape).map(([key, value]) => [key, removeQueryDefaults(value as z.ZodTypeAny).optional()])
+  );
+  return z.object(shape) as unknown as z.ZodType<Partial<z.infer<T>>>;
+}
+
 export const createBaseRouter = <
   T extends ZodObject<ZodRawShape>,
   C extends ZodObject<ZodRawShape>,
@@ -100,6 +129,7 @@ export const createBaseRouter = <
 }: Args<T, C, U, TDb, CDb, UDb>) => {
   const { routerName, collectionName, procedures } = config;
   const { schema, schemaCreate, schemaUpdate } = schemas;
+  const schemaPartialQueryInput = createPartialQueryInputSchema(schema);
 
   const schemaObjectId = z.string().refine((val) => ObjectId.isValid(val), {
     message: 'Invalid ObjectId',
@@ -162,7 +192,7 @@ export const createBaseRouter = <
       }),
 
     getSingleWhere: getProcedure('getSingleWhere')
-      .input(schema.partial())
+      .input(schemaPartialQueryInput)
       .query(async ({ ctx, input }) => {
         return getSingleWhereFn({
           db: ctx.db,
@@ -192,7 +222,7 @@ export const createBaseRouter = <
     }),
 
     getMany: getProcedure('getMany')
-      .input(schema.partial().optional())
+      .input(schemaPartialQueryInput.optional())
       .query(async ({ ctx, input }) => {
         return getManyFn({
           db: ctx.db,
@@ -204,7 +234,7 @@ export const createBaseRouter = <
       }),
 
     getManyLimitedFields: getProcedure('getManyLimitedFields')
-      .input(schema.partial().optional())
+      .input(schemaPartialQueryInput.optional())
       .query(async ({ ctx, input }) => {
         return getManyLimitedFieldsFn({
           db: ctx.db,
@@ -216,7 +246,7 @@ export const createBaseRouter = <
       }),
 
     getManyOptions: getProcedure('getManyOptions')
-      .input(schema.partial().optional())
+      .input(schemaPartialQueryInput.optional())
       .query(async ({ ctx, input }) => {
         return getManyOptionsFn({
           db: ctx.db,
@@ -228,7 +258,7 @@ export const createBaseRouter = <
       }),
 
     getCount: getProcedure('getCount')
-      .input(schema.partial().optional())
+      .input(schemaPartialQueryInput.optional())
       .query(async ({ ctx, input }) => {
         return getCountFn({
           db: ctx.db,
